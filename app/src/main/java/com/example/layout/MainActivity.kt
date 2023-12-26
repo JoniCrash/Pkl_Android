@@ -1,0 +1,395 @@
+package com.example.layout
+
+import android.content.Intent
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import android.icu.text.Transliterator.Position
+import android.os.Bundle
+import android.provider.MediaStore.Images.ImageColumns
+import android.view.textclassifier.TextLinks.TextLink
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.Space
+import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.focusGroup
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.modifier.modifierLocalMapOf
+import androidx.compose.ui.modifier.modifierLocalOf
+import androidx.compose.ui.platform.InspectableModifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.textInputServiceFactory
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.core.content.contentValuesOf
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.example.layout.ui.theme.LayoutTheme
+import org.w3c.dom.Text
+import kotlin.math.max
+import kotlin.math.min
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            Column(modifier = Modifier
+                .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    painter = painterResource(R.drawable.comet_dark),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .sizeIn(maxWidth = 100.dp, maxHeight = 100.dp)
+                )
+                Text(text = "SELAMAT DATANG",
+                    fontWeight = FontWeight.Bold
+                )
+                Button(onClick = {
+                    val daftar = Intent(this@MainActivity, Daftar::class.java)
+                    startActivity(daftar)
+                },modifier = Modifier
+                    .fillMaxWidth()
+                    ) {
+                    Text(text ="Daftar",
+                        color = Color.White)
+                }
+                Button(onClick = {
+                    val masuk = Intent(this@MainActivity,Masuk::class.java)
+                    startActivity(masuk)
+                },
+                    modifier = Modifier
+                    .fillMaxWidth(),) {
+                    Text(text = "MASUK",
+                        color = Color.White)
+                }
+            }
+//            Screen()
+//            daftar()
+//            Masuk()
+//            Greeting("Android")
+        }
+    }
+}
+
+//@Composable
+//fun UserChat(name:String,msg:String) {
+//    Row(modifier = Modifier.padding(4.dp)) {
+//        Image(
+//            painter = painterResource(R.drawable.comet_dark),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .sizeIn(70.dp, 70.dp, 70.dp, 70.dp)
+//                .padding(4.dp)
+//                .border(1.dp, color = Color.Black, CircleShape)
+//                .clip(CircleShape)
+//        )
+//        Spacer(modifier = Modifier.width(8.dp))
+//        Column(modifier = Modifier) {
+//            Text(
+//                text = name,
+//                fontWeight = FontWeight.Bold
+//            )
+//            Text(text = msg, modifier = Modifier.offset(x = 15.dp))
+//
+//            Icon(
+//                imageVector = Icons.Filled.Check,
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .align(Alignment.End)
+//            )
+//            Spacer(modifier = Modifier.width(20.dp))
+//            Column {
+//
+//
+//                Button(onClick = { /*TODO*/ }) {
+//                    PaddingValues(
+//                        start = 20.dp,
+//                        top = 20.dp,
+//                        end = 20.dp,
+//                        bottom = 20.dp
+//                    )
+//                    Icon(imageVector = Icons.Filled.Favorite,
+//                        contentDescription = null,
+//                        modifier = Modifier.size(ButtonDefaults.IconSize))
+//                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+//                    Text(text = "Daftar")
+//                    Text(text = "Saja")
+//                }
+//            }
+//        }
+//
+//    }
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun UserChatPreview() {
+//    LayoutTheme {
+//        UserChat(name = "Joni Crash", msg ="Android Dev" )
+//    }
+//}
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun daftar() {
+//    var text by remember { mutableStateOf("") }
+//    val daftar = "DAFTAR"
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .fillMaxHeight()
+//            .padding(
+//                vertical = 5.dp, horizontal = 5.dp
+//            )
+//    )
+//    {
+//        Spacer(modifier = Modifier
+//            .height(120.dp)
+//        )
+//        Image(
+//            painter = painterResource(R.drawable.comet_dark),
+//            contentDescription = null,
+//            modifier = Modifier
+//                //.align(Alignment.TopCenter)// Jika menggunakan Box
+//                .align(Alignment.CenterHorizontally)
+//        )
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+//            verticalArrangement = Arrangement.Center,
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            //Text(text="DAFTAR")
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp)
+//            ) {
+//                OutlinedTextField(
+//                    value = (text),
+//                    onValueChange = { newText -> text = newText },
+//                    label = { Text("Username") },
+//                    leadingIcon = {
+//                        Icon(
+//                            imageVector = (Icons.Default.Person),
+//                            contentDescription = null
+//                        )
+//                    },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 8.dp),
+//                )
+//
+//                // Text Input for Email
+//                OutlinedTextField(
+//                    value = text,
+//                    onValueChange = { newText -> text = newText },
+//                    label = { Text("Email") },
+//                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+//                    keyboardOptions = KeyboardOptions.Default.copy(
+//                        keyboardType = KeyboardType.Email,
+//                        imeAction = ImeAction.Next
+//                    ),
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 8.dp)
+//                )
+//
+//                // Text Input for Password
+//                OutlinedTextField(
+//                    value = text,
+//                    onValueChange = { newText -> text = newText },
+//                    label = { Text("Password") },
+//                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+//                    visualTransformation = VisualTransformation.None,
+//                    keyboardOptions = KeyboardOptions.Default.copy(
+//                        keyboardType = KeyboardType.Password,
+//                        imeAction = ImeAction.Done
+//                    ),
+//                    keyboardActions = KeyboardActions(onDone = {
+//                        // Handle the "Done" action here
+//                    }),
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 8.dp)
+//                )
+//                // Button to Show Entered Text
+//                Button(
+//                    onClick = { },
+//                    enabled = true,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 16.dp)
+//                ) {
+//                    Text(text="DAFTAR")
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun daftarPreview(){
+//    LayoutTheme {
+//        daftar()
+//    }
+//}
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun Masuk() {
+//    var text by remember { mutableStateOf("") }
+//    Spacer(modifier = Modifier
+//        )
+//    Card(
+//        modifier = Modifier
+//
+//            .fillMaxWidth()
+//            .fillMaxHeight()
+//            .padding(
+//                vertical = 20.dp, horizontal = 5.dp
+//            )
+//    ) {
+//        Image(
+//            painter = painterResource(R.drawable.comet_dark),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .align(Alignment.CenterHorizontally)
+//        )
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+//            verticalArrangement = Arrangement.Center,
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            //Text(text="MASUK")
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp)
+//            ) {
+//                OutlinedTextField(
+//                    value = (text),
+//                    onValueChange = { newText -> text = newText },
+//                    label = { Text("Username") },
+//                    leadingIcon = {
+//                        Icon(
+//                            imageVector = (Icons.Default.Person),
+//                            contentDescription = null
+//                        )
+//                    },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 8.dp),
+//                )
+//
+//                // Text Input for Password
+//                OutlinedTextField(
+//                    value = text,
+//                    onValueChange = { newText -> text = newText },
+//                    label = { Text("Password") },
+//                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+//                    visualTransformation = VisualTransformation.None,
+//                    keyboardOptions = KeyboardOptions.Default.copy(
+//                        keyboardType = KeyboardType.Password,
+//                        imeAction = ImeAction.Done
+//                    ),
+//                    keyboardActions = KeyboardActions(onDone = {
+//                        // Handle the "Done" action here
+//                    }),
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 8.dp)
+//                )
+//                // Button to Show Entered Text
+//                Button(
+//                    onClick = {
+//                        // Use the entered text
+//                    },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 16.dp)
+//                ) {
+//                    Text(text="MASUK")
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun MasukPreview() {
+//    LayoutTheme {
+//        Masuk()
+//    }
+//}
