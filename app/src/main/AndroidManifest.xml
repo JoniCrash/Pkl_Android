@@ -13,6 +13,11 @@
         android:theme="@style/Theme.Layout"
         tools:targetApi="31">
         <activity
+            android:name=".Dashboard"
+            android:exported="false"
+            android:label="@string/title_activity_dashboard"
+            android:theme="@style/Theme.Layout" />
+        <activity
             android:name=".Masuk"
             android:exported="false"
             android:label="@string/title_activity_masuk"
