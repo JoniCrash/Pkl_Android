@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import com.example.layout.ui.theme.LayoutTheme
 
 class Dashboard : ComponentActivity() {
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,60 +31,73 @@ class Dashboard : ComponentActivity() {
                 },
                     colors = TopAppBarDefaults.topAppBarColors(Color.Blue),
                     navigationIcon = {
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = { showMenu.value = true }) {
                             Icon(
                                 painterResource(id = R.drawable.baseline_menu_24),
                                 contentDescription = null
                             )
-                        }
-//                        DropdownMenu(
-//                            expanded = showMenu.value,
-//                            onDismissRequest = { showMenu.value = false }) {
-//                            DropdownMenuItem(
-//                                text = {
-//                                    Text(text = "Contoh 1")
-//                                },
-//                                onClick = { /*TODO*/ })
-//                            DropdownMenuItem(
-//                                text = {
-//                                    Text(text = "Contoh 2")
-//                                },
-//                                onClick = { /*TODO*/ })
-//                            DropdownMenuItem(
-//                                text = {
-//                                    Text(text = "Contoh 3")
-//                                },
-//                                onClick = { /*TODO*/ })
-//                        }
+                            // coba garis 3
+//                           {
+//                            Icon(
+//                                painterResource(id = R.drawable.baseline_more_vert_24),
+//                                contentDescription = null
+//                            )
+                                }
+                                DropdownMenu(
+                                    expanded = showMenu.value,
+                                    onDismissRequest = { showMenu.value = false }) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = "Emang boleh?")
+                                        },
+                                        onClick = { /*TODO*/ })
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = "Emang boleh??")
+                                        },
+                                        onClick = { /*TODO*/ })
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = "Emang boleh????")
+                                        },
+                                        onClick = { /*TODO*/ })
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = "Emang boleh????")
+                                        },
+                                        onClick = { /*TODO*/ })
+                                }
+                        //akhir garis 3
+
                     },
                     actions = {
                         IconButton(onClick = { showMenu.value = true }) {
-                            Icon(
-                                painterResource(id = R.drawable.baseline_more_vert_24),
-                                contentDescription = null
-                            )
+//                            Icon(
+//                                painterResource(id = R.drawable.baseline_more_vert_24),
+//                                contentDescription = null
+//                            )
                         }
                         DropdownMenu(
                             expanded = showMenu.value,
                             onDismissRequest = { showMenu.value = false }) {
                             DropdownMenuItem(
                                 text = {
-                                    Text(text = "Profil")
+                                    Text(text = "Emang boleh?")
                                 },
                                 onClick = { /*TODO*/ })
                             DropdownMenuItem(
                                 text = {
-                                    Text(text = "Paket WiFi")
+                                    Text(text = "Emang boleh??")
                                 },
                                 onClick = { /*TODO*/ })
                             DropdownMenuItem(
                                 text = {
-                                    Text(text = "Ajukan Pemasangan")
+                                    Text(text = "Emang boleh????")
                                 },
                                 onClick = { /*TODO*/ })
                             DropdownMenuItem(
                                 text = {
-                                    Text(text = "Pembayaran")
+                                    Text(text = "Emang boleh????")
                                 },
                                 onClick = { /*TODO*/ })
                         }
