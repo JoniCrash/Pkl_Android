@@ -89,7 +89,7 @@ class Daftar : ComponentActivity() {
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
+                                    .padding(vertical = 8.dp)
                             )
 
                             // Text Input for Email
