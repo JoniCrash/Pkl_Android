@@ -64,6 +64,7 @@ class Daftar : ComponentActivity() {
                             .align(Alignment.CenterHorizontally)
                             .sizeIn(maxWidth = 100.dp, maxHeight = 100.dp)
                     )
+
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(),

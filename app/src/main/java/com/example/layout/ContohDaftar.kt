@@ -1,19 +1,21 @@
 package com.example.layout
 
 import android.content.Intent
-import java.util.HashMap
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -21,93 +23,102 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
+import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
+import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.layout.ui.theme.LayoutTheme
-import com.android.volley.toolbox.StringRequest as StringRequest
 
 
 class ContohDaftar : ComponentActivity() {
+    private val url = "http://192.168.22.2/CRUDVoley/insert.php" // Sesuaikan dengan alamat URL Anda
+    private lateinit var tket: TextView
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
-            LayoutTheme {
+            var nim by remember { mutableStateOf("") }
+            var nama by remember { mutableStateOf("") }
+            var alamat by remember { mutableStateOf("") }
+            var keterangan by remember { mutableStateOf("") }
 
+            fun inputData() {
                 val queue = Volley.newRequestQueue(this)
-                val url = ("http://192.168.1.101/CRUDVolley/insert.php")
-                var nim by remember { mutableStateOf("") }
-                var nama by remember { mutableStateOf("") }
-                var alamat by remember { mutableStateOf("") }
-
-                Text(text = "Contoh Daftar")
-                Column {
-
-                    // input text nim
-                    TextField(
-                        value = (nim),
-                        onValueChange = { newText -> nim = newText },
-                        label = { Text("Nim") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                    )
-
-                    // input text nama
-                    TextField(
-                        value = (nama),
-                        onValueChange = { newText -> nama = newText },
-                        label = { Text("Nama") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                    )
-                    // input text alamat
-                    TextField(
-                        value = (alamat),
-                        onValueChange = { newText -> alamat = newText },
-                        label = { Text("alamat") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                    )
-                    Button(
-                        onClick = { queue
-                        },
-                        enabled = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp)
-                    ) {
-                        Text(text = "DAFTAR")
+                val stringRequest = object : StringRequest(
+                    Request.Method.POST, url,
+                    Response.Listener { response ->
+                        keterangan = response
+                    },
+                    Response.ErrorListener { error ->
+                        keterangan = "ERROR TIDAK DAPAT INPUT DATA"
+                    })
+                {
+                    override fun getParams(): MutableMap<String, String> {
+                        val params = HashMap<String, String>()
+                        params["nim"] = nim
+                        params["nama"] = nama
+                        params["alamat"] = alamat
+                        return params
                     }
-                    val textView = findViewById<TextView>(
-                        androidx.core.R.id.text
-                    )
-                    // Request a string response from the provided URL.
-                    val stringRequest = StringRequest(Request.Method.POST, url,
-                        { response ->
-                            // Display the first 500 characters of the response string.
-                            "Response is: ${response.substring(0, 500)}".also { textView.text = it }
-                        },
-                        { "That didn't work!".also { textView.text = it } })
+                }
+                queue.add(stringRequest)
+            }
 
-                    // Add the request to the RequestQueue.
-                    queue.add(stringRequest)
+
+            //----------------------------------//
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "",
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                TextField(
+                    value = nim,
+                    onValueChange = { nim = it },
+                    label = { Text("Nim") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                TextField(
+                    value = nama,
+                    onValueChange = { nama = it },
+                    label = { Text("Nama") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                TextField(
+                    value = alamat,
+                    onValueChange = { alamat = it },
+                    label = { Text("Alamat") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Button(
+                    onClick = {
+                        val contohDaftar =
+                            Intent(this@ContohDaftar, inputData()::class.java)
+                    }, modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "Input Data")
                 }
-                fun getParams(): Map<String, String> {
-                    val params: MutableMap<String, String> = HashMap()
-                    // Add your code to populate the params map if needed
-                    params["nim"] = nim
-                    params["Nama"] = nama
-                    params["Alamat"] = alamat
-                    return params
-                }
+
+
+                Text(
+                    text = keterangan,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
             }
         }
     }

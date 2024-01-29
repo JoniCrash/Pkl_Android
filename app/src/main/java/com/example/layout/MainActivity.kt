@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
                     fontWeight = FontWeight.Bold
                 )
                 Button(onClick = {
-                    val daftar = Intent(this@MainActivity, Daftar::class.java)
+                    val daftar = Intent(this@MainActivity, ContohDaftar::class.java)
                     startActivity(daftar)
                 },modifier = Modifier
                     .fillMaxWidth()
