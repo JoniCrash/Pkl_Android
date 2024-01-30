@@ -46,6 +46,7 @@ class Masuk : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
             LayoutTheme {
                 var user by remember { mutableStateOf("") }
                 var pw by remember { mutableStateOf("") }
@@ -78,7 +79,7 @@ class Masuk : ComponentActivity() {
                         ) {
                             TextField(
                                 //text input username
-                                value = (user),
+                            value = (user),
                                 onValueChange = { newText -> user = newText },
                                 label = { Text("Username") },
                                 leadingIcon = {
