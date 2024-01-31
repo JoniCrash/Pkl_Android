@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -82,8 +83,6 @@ class ContohDaftar : ComponentActivity() {
 //                }
 //            )
 //            }
-
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -202,9 +201,11 @@ class ContohDaftar : ComponentActivity() {
                         Text(
                                 text = keterangan,
                                 textAlign = TextAlign.Center,
+                                color = Color.Red,
                                 modifier = Modifier
                                     .padding(top = 16.dp)
-                                    .align(Alignment.CenterHorizontally)
+                                    .align(Alignment.CenterHorizontally),
+
 
                             )
                     }
