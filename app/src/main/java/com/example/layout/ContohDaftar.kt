@@ -13,16 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
@@ -33,10 +33,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.android.volley.Request
@@ -50,6 +53,7 @@ class ContohDaftar : ComponentActivity() {
     private val url = "http://192.168.22.2/CRUDVoley/insert.php" // Sesuaikan dengan alamat URL Anda
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -58,31 +62,40 @@ class ContohDaftar : ComponentActivity() {
             var username by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
             var keterangan by remember { mutableStateOf("") }
+
             val coroutineScope = rememberCoroutineScope()
             val queue = Volley.newRequestQueue(this@ContohDaftar)
-            var showPassword = remember { mutableStateOf(false)}
+            val showPassword = remember { mutableStateOf(false)}
+            val focusManager = LocalFocusManager.current
+            val matchError = remember { mutableStateOf(false) }
+            val hasError  = false
 
-//            //Logika input data ke server
-//            fun inputData() {
-//                val stringRequest = StringRequest(Request.Method.POST, url,
-//                { response -> keterangan = "Response is: ${response.substring(0, 500)}"
-//                    val masuk =
-//                        Intent(this@ContohDaftar,Masuk::class.java)
-//                    startActivity(masuk)
-//                    finish()},
-//                {
-//                    keterangan =
-//                        "Eror input data! periksa koneksi anda, lalu ulangi"
-//                    coroutineScope.launch {
-//                        delay(10000) // Waktu jeda dalam milidetik (misalnya, 2000 ms = 2 detik)
-//                        // Panggil fungsi callback untuk berpindah ke halaman berikutnya
-//                        nohp = ""
-//                        username = ""
-//                        password = ""
-//                    }
-//                }
-//            )
-//            }
+//            Logika input data ke server
+            fun inputData() {
+            val stringRequest = StringRequest(Request.Method.POST, url,
+                { response -> keterangan = "Berhasil mendaftar slahkan masuk"
+                    coroutineScope.launch {
+                        delay(5000)
+                    }
+                    val masuk =
+                        Intent(this@ContohDaftar,Masuk::class.java)
+                    startActivity(masuk)
+                    finish()},
+                {
+                    keterangan =
+                        "Eror input data! periksa koneksi anda, lalu ulangi"
+                    coroutineScope.launch {
+                        delay(5000) // Waktu jeda dalam milidetik (misalnya, 2000 ms = 2 detik)
+                        // Panggil fungsi callback untuk berpindah ke halaman berikutnya
+                        nohp = ""
+                        username = ""
+                        password = ""
+                        keterangan=""
+                    }
+                }
+            )
+            queue.add(stringRequest)
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -152,17 +165,34 @@ class ContohDaftar : ComponentActivity() {
                                     contentDescription = null
                                 )
                             },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            visualTransformation = PasswordVisualTransformation(),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    focusManager.clearFocus()
+                                }
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                autoCorrect = true,
+                                imeAction = ImeAction.Done
+                                ),
+                            singleLine = true,
+                            isError = hasError || matchError.value,
+                            visualTransformation =
+                            if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
                             trailingIcon = {
-                                           IconToggleButton(checked = showPassword.value, onCheckedChange = {showPassword.value = it}){
-                                               val eyeIcon: ImageVector =
-                                                   if (showPassword.value) { Icons.Default.Add} else {Icons.Default.Clear}
-                                               Icon(
-                                                   imageVector = eyeIcon,
-                                                   contentDescription = null
-                                               )
-                                           }
+                                val (icon, iconColor) = (if (showPassword.value) {
+                                    Pair(
+                                        R.drawable.baseline_remove_red_eye_24,
+                                        colorResource(id = R.color.purple_200)
+                                    )
+                                } else Pair(Icons.Filled.Done, colorResource(id = R.color.white)))
+                                IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.baseline_remove_red_eye_24),
+                                        contentDescription = "Visibility",
+                                        tint = iconColor
+                                    )
+                                }
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -171,26 +201,7 @@ class ContohDaftar : ComponentActivity() {
 
                         Button(
                             onClick = {
-                                val stringRequest = StringRequest(Request.Method.POST, url,
-                                    { response -> keterangan = "Response is: ${response.substring(0, 500)}"
-                                        val masuk =
-                                            Intent(this@ContohDaftar,Masuk::class.java)
-                                        startActivity(masuk)
-                                        finish()},
-                                    {
-                                        keterangan =
-                                            "Eror input data! periksa koneksi anda, lalu ulangi"
-                                        coroutineScope.launch {
-                                            delay(5000) // Waktu jeda dalam milidetik (misalnya, 2000 ms = 2 detik)
-                                            // Panggil fungsi callback untuk berpindah ke halaman berikutnya
-                                            nohp = ""
-                                            username = ""
-                                            password = ""
-                                            keterangan=""
-                                        }
-                                    }
-                                )
-                                queue.add(stringRequest)
+                                      inputData()
                             }, modifier = Modifier
                                 .fillMaxWidth()
                         ) {
@@ -205,8 +216,6 @@ class ContohDaftar : ComponentActivity() {
                                 modifier = Modifier
                                     .padding(top = 16.dp)
                                     .align(Alignment.CenterHorizontally),
-
-
                             )
                     }
                 }
@@ -214,3 +223,4 @@ class ContohDaftar : ComponentActivity() {
         }
     }
 }
+

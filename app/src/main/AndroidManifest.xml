@@ -17,6 +17,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".contohhh"
+            android:exported="false"
+            android:label="@string/title_activity_contohhh"
+            android:theme="@style/Theme.Layout" />
+        <activity
             android:name=".ContohDaftar"
             android:exported="false"
             android:label="@string/title_activity_contoh_daftar"
