@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,8 +24,11 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,58 +45,57 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.layout.ui.theme.LayoutTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class ContohDaftar : ComponentActivity() {
-
+class ContohMasuk : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContent {
             var nohp by remember { mutableStateOf("") }
-            var username by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
             var keterangan by remember { mutableStateOf("") }
+            val urlSelect = "http://192.168.22.2/CRUDVoley/insert.php"
 
-            val urlInsert = "http://192.168.22.2/CRUDVoley/insert.php" // Sesuaikan dengan alamat URL Anda
             val coroutineScope = rememberCoroutineScope()
-            val queue = Volley.newRequestQueue(this@ContohDaftar)
-            val showPassword = remember { mutableStateOf(false)}
+            val queue = Volley.newRequestQueue(this)
+            val showPassword = remember { mutableStateOf(false) }
             val focusManager = LocalFocusManager.current
             val matchError = remember { mutableStateOf(false) }
             val hasError  = false
 
-//            Logika input data ke server
             fun  inputData() {
-            val stringRequest = StringRequest(Request.Method.POST, urlInsert,
-                { response -> keterangan = "Berhasil mendaftar "
-                    coroutineScope.launch {
-                        delay(5000)
+                val stringRequest = StringRequest(
+                    Request.Method.GET, urlSelect,
+                    { response -> keterangan = "Berhasil Masuk"
+                        coroutineScope.launch {
+                            delay(5000)
+                        }
+                        val dasbor =
+                            Intent(this,Dashboard::class.java)
+                        startActivity(dasbor)
+                        finish()},
+                    {
+                        keterangan =
+                            "user tidak terdaftar"
+                        coroutineScope.launch {
+                            delay(5000) // Waktu jeda dalam milidetik (misalnya, 2000 ms = 2 detik)
+                            // Panggil fungsi callback untuk berpindah ke halaman atau tindakan lain
+                            nohp = ""
+                            password = ""
+                            keterangan=""
+                        }
                     }
-                    val masuk =
-                        Intent(this,ContohMasuk::class.java)
-                    startActivity(masuk)
-                    finish()},
-                {
-                    keterangan =
-                        "Eror input data! periksa koneksi anda, lalu ulangi"
-                    coroutineScope.launch {
-                        delay(5000) // Waktu jeda dalam milidetik (misalnya, 2000 ms = 2 detik)
-                        // Panggil fungsi callback untuk berpindah ke halaman atau tindakan lain
-                        nohp = ""
-                        username = ""
-                        password = ""
-                        keterangan=""
-                    }
-                }
-            )
-            queue.add(stringRequest)
+                )
+                queue.add(stringRequest)
             }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,29 +141,13 @@ class ContohDaftar : ComponentActivity() {
                                 .padding(vertical = 8.dp),
                         )
                         TextField(
-                            value = username,
-                            onValueChange = { username = it },
-                            label = { Text("username") },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = (Icons.Default.Person),
-                                    contentDescription = null
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                        )
-
-                        TextField(
                             value = password,
                             onValueChange = { password = it  },
                             label = { Text("Password") },
                             leadingIcon = { Icon(
-                                    imageVector = (Icons.Default.Lock),
-                                    contentDescription = null
-                                )
+                                imageVector = (Icons.Default.Lock),
+                                contentDescription = null
+                            )
                             },
                             keyboardActions = KeyboardActions(
                                 onDone = {
@@ -168,10 +155,10 @@ class ContohDaftar : ComponentActivity() {
                                 }
                             ),
                             keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Text,
+                                keyboardType = KeyboardType.Text,
                                 autoCorrect = true,
                                 imeAction = ImeAction.Done
-                                ),
+                            ),
                             singleLine = true,
                             isError = hasError || matchError.value,
                             visualTransformation =
@@ -198,7 +185,7 @@ class ContohDaftar : ComponentActivity() {
 
                         Button(
                             onClick = {
-                                      inputData()
+                                inputData()
                             }, modifier = Modifier
                                 .fillMaxWidth()
                         ) {
@@ -207,16 +194,20 @@ class ContohDaftar : ComponentActivity() {
                         Spacer(modifier = Modifier.height(20.dp))
 
                         Text(
-                                text = keterangan,
-                                textAlign = TextAlign.Center,
-                                color = Color.Red,
-                                modifier = Modifier
-                                    .padding(top = 16.dp)
-                                    .align(Alignment.CenterHorizontally),
-                            )
+                            text = keterangan,
+                            textAlign = TextAlign.Center,
+                            color = Color.Red,
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .align(Alignment.CenterHorizontally),
+                        )
                     }
                 }
             }
+
+
+
         }
     }
 }
+

@@ -7,4 +7,6 @@
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="title_activity_contoh_daftar">ContohDaftar</string>
     <string name="title_activity_contohhh">contohhh</string>
+    <string name="title_activity_contoh_masuk">ContohMasuk</string>
+    <string name="title_activity_compose">compose</string>
 </resources>

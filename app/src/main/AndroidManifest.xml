@@ -17,6 +17,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".compose"
+            android:exported="false"
+            android:label="@string/title_activity_compose"
+            android:theme="@style/Theme.Layout" />
+        <activity
+            android:name=".ContohMasuk"
+            android:exported="false"
+            android:label="@string/title_activity_contoh_masuk"
+            android:theme="@style/Theme.Layout" />
+        <activity
             android:name=".contohhh"
             android:exported="false"
             android:label="@string/title_activity_contohhh"
