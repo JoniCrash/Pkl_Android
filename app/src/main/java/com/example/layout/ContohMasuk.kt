@@ -204,9 +204,6 @@ class ContohMasuk : ComponentActivity() {
                     }
                 }
             }
-
-
-
         }
     }
 }

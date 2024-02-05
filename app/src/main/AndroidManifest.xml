@@ -17,6 +17,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ContohDashboard"
+            android:exported="false"
+            android:label="@string/title_activity_contoh_dashboard"
+            android:theme="@style/Theme.Layout" />
+        <activity
             android:name=".compose"
             android:exported="false"
             android:label="@string/title_activity_compose"
