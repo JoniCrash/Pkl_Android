@@ -75,7 +75,7 @@ class ContohDaftar : ComponentActivity() {
                         delay(5000)
                     }
                     val masuk =
-                        Intent(this,ContohMasuk::class.java)
+                        Intent(this,ContohDashboard::class.java)
                     startActivity(masuk)
                     finish()},
                 {
