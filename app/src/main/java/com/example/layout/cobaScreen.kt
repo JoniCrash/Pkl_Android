@@ -32,8 +32,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.components.Lazy
 import java.nio.file.WatchEvent
 
 @Composable
@@ -91,7 +93,7 @@ fun cobaScreen() {
                         Text(text = "portofolio")
                     }
                     if (showPortofolio.value){
-                        
+                        portofolioScreen()
                     }
                 }
             }
@@ -108,8 +110,8 @@ fun portofolioScreen() {
         shape = RoundedCornerShape(15.dp),
         border = BorderStroke(2.dp, Color.LightGray)
     ) {
-        LazyColumn{
-            items(getPlist()){
+        LazyColumn {
+            items(getPlist()) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -123,23 +125,35 @@ fun portofolioScreen() {
                             .background(MaterialTheme.colorScheme.background)
                             .padding(16.dp)
                     ) {
-                        Image(painter = painterResource(id = R.drawable.comet_dark), contentDescription = null,
-                            contentScale = ContentScale.Crop)
-                    }
-                    Spacer(modifier = Modifier
-                        .width(10.dp))
-                    Column {
-                        Text(
-                            text = it.name,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
+                        Surface(
+                            modifier = Modifier
+                                .size(50.dp),
+                            shape = CircleShape,
+                            shadowElevation = 4.dp
+                        ) {
+                            Image(
+                                painter = painterResource(id = it.image), contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Spacer(
+                            modifier = Modifier
+                                .width(10.dp)
                         )
-                        Text(
-                            text = it.desc,
-                        )
+                        Column {
+                            Text(
+                                text = it.name,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = it.desc,
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
+

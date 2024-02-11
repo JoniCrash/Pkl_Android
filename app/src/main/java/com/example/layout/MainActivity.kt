@@ -23,39 +23,40 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Column(modifier = Modifier
-                .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(
-                    painter = painterResource(R.drawable.comet_dark),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .sizeIn(maxWidth = 100.dp, maxHeight = 100.dp)
-                )
-                Text(text = "SELAMAT DATANG",
-                    fontWeight = FontWeight.Bold
-                )
-                Button(onClick = {
-                    val daftar = Intent(this@MainActivity, ContohDaftar::class.java)
-                    startActivity(daftar)
-                },modifier = Modifier
-                    .fillMaxWidth()
-                    ) {
-                    Text(text ="Daftar",
-                        color = Color.White)
-                }
-                Button(onClick = {
-                    val masuk = Intent(this@MainActivity,Masuk::class.java)
-                    startActivity(masuk)
-                },
-                    modifier = Modifier
-                    .fillMaxWidth(),) {
-                    Text(text = "MASUK",
-                        color = Color.White)
-                }
-            }
+            AyoLah()
+//            Column(modifier = Modifier
+//                .fillMaxWidth(),
+//                verticalArrangement = Arrangement.Center,
+//                horizontalAlignment = Alignment.CenterHorizontally) {
+//                Image(
+//                    painter = painterResource(R.drawable.comet_dark),
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .align(Alignment.CenterHorizontally)
+//                        .sizeIn(maxWidth = 100.dp, maxHeight = 100.dp)
+//                )
+//                Text(text = "SELAMAT DATANG",
+//                    fontWeight = FontWeight.Bold
+//                )
+//                Button(onClick = {
+//                    val daftar = Intent(this@MainActivity, ContohDaftar::class.java)
+//                    startActivity(daftar)
+//                },modifier = Modifier
+//                    .fillMaxWidth()
+//                    ) {
+//                    Text(text ="Daftar",
+//                        color = Color.White)
+//                }
+//                Button(onClick = {
+//                    val masuk = Intent(this@MainActivity,Masuk::class.java)
+//                    startActivity(masuk)
+//                },
+//                    modifier = Modifier
+//                    .fillMaxWidth(),) {
+//                    Text(text = "MASUK",
+//                        color = Color.White)
+//                }
+//            }
         }
     }
 }
