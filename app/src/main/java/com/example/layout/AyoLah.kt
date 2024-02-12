@@ -50,10 +50,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun AyoLahPreview() {
+    AyoLah()
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun AyoDaftarPreview() {
+    AyoDaftar()
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun AyoMasukPreview() {
+    AyoMasuk()
+}
 @Composable
 fun AyoLah() {
     val showDaftar = remember { mutableStateOf(false) }
@@ -112,12 +130,29 @@ fun AyoLah() {
                         }
                     }
                     Column {
-                        if (showDaftar.value) {
+                        if (showDaftar.value){
+                            !showMasuk.value
+                            showDaftar.value
+                            AyoDaftar()
+                        }else if (showMasuk.value){
+                            !showDaftar.value
+                            showMasuk.value
+                            AyoMasuk()
+                        }else if (showDaftar.value && showMasuk.value){
+                            !showDaftar.value
+                            showMasuk.value
+                            AyoMasuk()
+                        }else if (showMasuk.value && showDaftar.value){
+                            !showMasuk.value
+                            showDaftar.value
                             AyoDaftar()
                         }
-                        if (showMasuk.value) {
-                            AyoMasuk()
-                        }
+//                        if (showMasuk.value) {
+//                            AyoMasuk()
+//                        }
+//                        if (showDaftar.value) {
+//                            AyoMasuk()
+//                        }
                     }
                 }
             }
@@ -139,7 +174,9 @@ fun AyoDaftar() {
 
     Surface(
         modifier = Modifier
-            .fillMaxSize()
+//            .fillMaxSize()
+            .fillMaxWidth()
+            .height(320.dp)
             .padding(5.dp),
         shape = RoundedCornerShape(15.dp),
         border = BorderStroke(2.dp, Color.LightGray)
@@ -263,7 +300,9 @@ fun AyoMasuk() {
 
     Surface(
         modifier = Modifier
-            .fillMaxSize()
+//            .fillMaxSize()
+            .fillMaxWidth()
+            .height(255.dp)
             .padding(5.dp),
         shape = RoundedCornerShape(15.dp),
         border = BorderStroke(2.dp, Color.LightGray)
@@ -342,7 +381,7 @@ fun AyoMasuk() {
                         }, modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        Text(text = "AYO DAFTAR")
+                        Text(text = "AYO MASUK")
                     }
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -359,3 +398,4 @@ fun AyoMasuk() {
         }
     }
 }
+
