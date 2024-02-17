@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,8 +33,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -72,6 +75,43 @@ fun AyoDaftarPreview() {
 fun AyoMasukPreview() {
     AyoMasuk()
 }
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun FormPengajuanPreview() {
+    FormPengajuan()
+}
+
+//Awal FormPengajaun
+@Composable
+fun FormPengajuan() {
+    val showMenu = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
+
+    // Loop untuk membuat RadioButton dengan TextField untuk setiap pilihan
+    val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
+    // MutableState untuk menyimpan opsi yang dipilih
+    var pilihanPaket by remember { mutableStateOf(opsiPaket[0]) }
+    // MutableState untuk menyimpan teks dalam TextField
+    var textValue by remember { mutableStateOf("") }
+
+    var noHp by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var namaLengkap by remember { mutableStateOf("") }
+    var paket by remember { mutableStateOf("") }
+    var lokasi by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+         .fillMaxWidth()
+         .fillMaxHeight()
+         .padding(vertical = 0.1.dp, horizontal = 0.1.dp)
+    ) {
+
+    }
+}
+//Akhir FormPengauan
 @Composable
 fun AyoLah() {
     val showDaftar = remember { mutableStateOf(false) }

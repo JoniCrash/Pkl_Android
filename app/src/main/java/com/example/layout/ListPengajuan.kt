@@ -1,6 +1,6 @@
 package com.example.layout
 
-class ListPengajuan(
+data class ListPengajuan(
     val noHp : String,
     val email : String,
     val namaLengkap : String,

@@ -388,7 +388,6 @@ fun contohDashboard() {
                                     paket,
                                     lokasi,
                                 )
-
                                 pengajuan.add(note)
                                 noHp = ""
                                 email = ""
