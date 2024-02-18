@@ -2,6 +2,10 @@ package com.example.layout
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,18 +15,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +41,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -47,6 +59,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -58,23 +72,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun AyoLahPreview() {
-    AyoLah()
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun AyoDaftarPreview() {
-    AyoDaftar()
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun AyoMasukPreview() {
-    AyoMasuk()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun AyoLahPreview() {
+//    AyoLah()
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun AyoDaftarPreview() {
+//    AyoDaftar()
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun AyoMasukPreview() {
+//    AyoMasuk()
+//}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -88,6 +102,7 @@ fun FormPengajuan() {
     val showMenu = remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
+    val scrollState = rememberScrollState()
 
     // Loop untuk membuat RadioButton dengan TextField untuk setiap pilihan
     val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
@@ -101,17 +116,269 @@ fun FormPengajuan() {
     var namaLengkap by remember { mutableStateOf("") }
     var paket by remember { mutableStateOf("") }
     var lokasi by remember { mutableStateOf("") }
+    var nik by remember { mutableStateOf("") }
 
+    var password by remember { mutableStateOf("") }
+    val showPassword = remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    val matchError = remember { mutableStateOf(false) }
+    val hasError = false
+
+    var nameError by remember { mutableStateOf(false) }
+
+//    fun validateName() {
+//        nameError = name.isBlank()
+//    }
+
+
+//        TextField(
+//            value = name,
+//            onValueChange = { name = it },
+//            label = { Text("Enter your name") },
+//            isError = nameError,
+//            singleLine = true
+//        )
+//
+//        if (nameError) {
+//            Text("Name cannot be empty", color = MaterialTheme.colors.error)
+//        }
+//
+//        Button(onClick = { validateName() }) {
+//            Text("Submit")
+//        }
     Column(
         modifier = Modifier
-         .fillMaxWidth()
-         .fillMaxHeight()
-         .padding(vertical = 0.1.dp, horizontal = 0.1.dp)
-    ) {
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(vertical = 0.1.dp, horizontal = 0.1.dp)
+//            .scrollable( orientation = Orientation.Vertical,enabled =true)
+    )
+    {
+        Image(
+            painter = painterResource(R.drawable.comet_dark),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(100.dp)
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
+            Spacer(modifier = Modifier.padding(8.dp))
+            Text(text = "Form Pengajuan Pemasangan WiFi")
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .verticalScroll(scrollState)
+                    .fillMaxSize()
+            )
+
+            {
+                repeat(30) {
+                }
+            }
+            TextField(
+                value = namaLengkap,
+                label = {
+                    Text(text = "Nama Lengkap")
+                },
+                placeholder = {
+                    Text(text = "Nama Lengkap")
+                },
+                onValueChange = { namaLengkap = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = (Icons.Default.Person),
+                        contentDescription = null
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextField(
+                value = nik,
+                label = {
+                    Text(text = "NIK")
+                },
+                placeholder = {
+                    Text(text = "NIK")
+                },
+                onValueChange = { nik = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = (Icons.Default.Person),
+                        contentDescription = null
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextField(
+                value = noHp,
+                label = {
+                    Text(text = "Nomor Hp")
+                },
+                placeholder = {
+                    Text(text = "Nomor Hp")
+                },
+                onValueChange = { noHp = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = (Icons.Default.Phone),
+                        contentDescription = null
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextField(
+                value = email,
+                label = {
+                    Text(text = "Email")
+                },
+                placeholder = {
+                    Text(text = "Email")
+                },
+                onValueChange = { email = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = (Icons.Default.Email),
+                        contentDescription = null
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "Paket")
+                    opsiPaket.forEach { pilihanya ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = pilihanPaket == pilihanya,
+                                onClick = { pilihanPaket = pilihanya },
+                                modifier = Modifier.padding(end = 1.dp)
+                            )
+                            Text(
+                                text = pilihanya,
+                                modifier = Modifier.padding(end = 1.dp)
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            TextField(
+                value = lokasi,
+                label = {
+                    Text(text = "Lokasi Pemasangan")
+                },
+                placeholder = {
+                    Text(text = "Lokasi Pemasangan")
+                },
+                onValueChange = { lokasi = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = (Icons.Default.LocationOn),
+                        contentDescription = null
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextField(
+                value = lokasi,
+                label = {
+                    Text(text = "Lokasi Pemasangan")
+                },
+                placeholder = {
+                    Text(text = "Lokasi Pemasangan")
+                },
+                onValueChange = { lokasi = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = (Icons.Default.LocationOn),
+                        contentDescription = null
+                    )
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = (Icons.Default.Lock),
+                        contentDescription = null
+                    )
+                },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    autoCorrect = true,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+                isError = hasError || matchError.value,
+                visualTransformation =
+                if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    if (showPassword.value) {
+                        Pair(
+                            R.drawable.baseline_remove_red_eye_24,
+                            colorResource(id = R.color.black)
+                        )
+                    } else Pair(Icons.Filled.Done, colorResource(id = R.color.white))
+                    IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_remove_red_eye_24),
+                            contentDescription = "Visibility"
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+
+
+        }
     }
-}
-//Akhir FormPengauan
+} //Akhir FormPengauan
+
 @Composable
 fun AyoLah() {
     val showDaftar = remember { mutableStateOf(false) }
