@@ -117,7 +117,6 @@ fun FormPengajuan() {
     val hasError = false
 
     var nameError by remember { mutableStateOf(false) }
-    val jarakTextField = Spacer(modifier = Modifier.height(8.dp))
 
 //    fun validateName() {
 //        nameError = name.isEmpty()
@@ -193,7 +192,7 @@ fun FormPengajuan() {
                         modifier = Modifier
                             .fillMaxWidth()
                     )
-                    jarakTextField
+                    Spacer(modifier = Modifier.height(8.dp))
                     TextField(
                         value = nik,
                         label = {
@@ -215,7 +214,7 @@ fun FormPengajuan() {
                     )
 
 
-                    jarakTextField
+                    Spacer(modifier = Modifier.height(8.dp))
                     TextField(
                         value = noHp,
                         label = {
@@ -235,7 +234,7 @@ fun FormPengajuan() {
                         modifier = Modifier
                             .fillMaxWidth()
                     )
-                    jarakTextField
+                    Spacer(modifier = Modifier.height(8.dp))
                     TextField(
                         value = email,
                         label = {
@@ -255,7 +254,7 @@ fun FormPengajuan() {
                         modifier = Modifier
                             .fillMaxWidth()
                     )
-                    jarakTextField
+                    Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.padding(8.dp)
                     ) {
@@ -302,7 +301,7 @@ fun FormPengajuan() {
                             .fillMaxWidth()
                     )
 
-                    jarakTextField
+                    Spacer(modifier = Modifier.height(8.dp))
                     TextField(
                         value = lokasi,
                         label = {
@@ -322,7 +321,12 @@ fun FormPengajuan() {
                         modifier = Modifier
                             .fillMaxWidth()
                     )
-                    jarakTextField
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Button(onClick = { /*TODO*/ },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text(text = "Ambil Gambar")
+                    }
 
                     TextField(
                         value = password,
