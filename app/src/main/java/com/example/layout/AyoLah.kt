@@ -1,5 +1,9 @@
 package com.example.layout
 
+import android.content.Context
+import android.media.MediaPlayer
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -13,8 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,6 +83,7 @@ import androidx.compose.ui.unit.sp
 //    AyoMasuk()
 //}
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun FormPengajuanPreview() {
@@ -88,6 +91,7 @@ fun FormPengajuanPreview() {
 }
 
 //Awal FormPengajaun
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun FormPengajuan() {
 
@@ -369,7 +373,18 @@ fun FormPengajuan() {
                         modifier = Modifier
                             .fillMaxWidth()
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
 
+                    Button(
+                        onClick = { R.raw.Click
+                        },
+                        enabled = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                    ) {
+                        Text(text = "DAFTAR")
+                    }
 
                 }
             }
