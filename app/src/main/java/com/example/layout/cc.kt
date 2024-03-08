@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var imageView: ImageView? = null
     private var editText: EditText? = null
 
-    //Image request code
+    Image request code
     private val PICK_IMAGE_REQUEST = 1
 
     //Bitmap to get image from gallery

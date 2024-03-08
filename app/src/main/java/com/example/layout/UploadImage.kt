@@ -8,15 +8,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import net.gotev.uploadservice.MultipartUploadRequest
-import java.io.IOException
-import java.util.UUID
-import android.net.Uri
-import android.os.Bundle
 import android.provider.MediaStore.Images.Media.DATA
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -46,30 +39,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.layout.ui.theme.LayoutTheme
+import net.gotev.uploadservice.MultipartUploadRequest
 import net.gotev.uploadservice.UploadNotificationConfig
+import java.io.IOException
 import java.util.UUID
 
-class UploadImage : ComponentActivity() {
+class UploadImage : ComponentActivity(), View.OnClickListener {
     //Declaring views
-//    private var buttonChoose: Button? = null
-//    private var buttonUpload: Button? = null
-//    private var imageView: ImageView? = null
+    private var buttonChoose: Button? = null
+    private var buttonUpload: Button? = null
+    private var imageView: ImageView? = null
 //    private var editText: EditText? = null
 
     //Image request code
     private val PICK_IMAGE_REQUEST = 1
+
+    private val STORAGE_PERMISSION_CODE = 123
 
     //Bitmap to get image from gallery
     private var bitmap: Bitmap? = null
     //Uri to store the image uri
     private var filePath: Uri? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)
         setContent {
             LayoutTheme {
@@ -78,7 +74,14 @@ class UploadImage : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
+                    requestStoragePermission()
+
                     var imageName by remember { mutableStateOf("") }
+
+
+                    buttonChoose!!.setOnClickListener(this)
+                    buttonUpload!!.setOnClickListener(this)
                     //
                     fun uploadMultipart() {
                         //getting name for the image
@@ -129,7 +132,7 @@ class UploadImage : ComponentActivity() {
                         cursor?.moveToFirst()
                         var document_id = cursor?.getString(0)
                         document_id = document_id!!.substring(document_id.lastIndexOf(":") + 1)
-                        cursor.close()
+                        cursor?.close()
 
                         val cursorImage: Cursor? = contentResolver.query(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -141,20 +144,31 @@ class UploadImage : ComponentActivity() {
 
                         return path ?: ""
                     }
+
                     //Requesting permission
                     fun requestStoragePermission() {
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                            return
-
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        if (ContextCompat.checkSelfPermission(
+                                this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) return
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                                this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            )
+                        ) {
                             // If the user has denied the permission previously your code will come to this block
                             // Here you can explain why you need this permission
                             // Explain here why you need this permission
                         }
-
                         // And finally ask for the permission
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
+                        ActivityCompat.requestPermissions(
+                            this,
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                            UploadImage.Companion.STORAGE_PERMISSIONS_CODE
+                        )
                     }
+
                     fun onRequestPermissionsResult(
                         requestCode: Int,
                         permissions: Array<String?>,
@@ -178,17 +192,6 @@ class UploadImage : ComponentActivity() {
                             }
                         }
                     }
-                    fun onClick(v: View) {
-                        when (v) {
-                            buttonChoose -> showFileChooser()
-                            buttonUpload -> uploadMultipart()
-                        }
-                    }
-
-                    companion object {
-                    // storage permission code
-                    private val STORAGE_PERMISSION_CODE = 123
-                }
 
                     //
 
@@ -196,7 +199,18 @@ class UploadImage : ComponentActivity() {
             }
         }
     }
+
+    override fun onClick(v: View?) {
+        when (v) {
+            buttonChoose -> showFileChooser()
+            buttonUpload -> uploadMultipart()
+        }
+    }
+
+
 }
+
+
 @Composable
 fun ImageUploadScreen() {
     var imageName by remember { mutableStateOf("") }
