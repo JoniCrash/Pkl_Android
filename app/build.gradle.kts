@@ -80,7 +80,7 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.02.02"))
     implementation("com.android.support:support-annotations:28.0.0")
     implementation("androidx.compose.foundation:foundation-desktop:1.6.3")
-    implementation("androidx.activity:activity:1.8.0")
+    implementation("androidx.activity:activity:1.8.2")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.02"))
 
 
