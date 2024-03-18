@@ -8,7 +8,11 @@ import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -54,6 +58,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -96,6 +101,53 @@ import com.android.volley.toolbox.ImageRequest
 @Composable
 fun FormPengajuanPreview() {
     FormPengajuan()
+}
+
+@Preview
+@Composable
+private fun previeHomeScreen() {
+    HomeScreen()
+}
+
+@Composable
+fun HomeScreen() {
+        Box {
+            Image(
+                painter = painterResource(id = R.drawable.comet_dark),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.fillMaxSize())
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(100.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_person_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(250.dp)
+                        .background(Color.Blue)
+                        .border(
+                            width = 1.dp,
+                            color = Color.White,
+                            shape = CircleShape
+                        ))
+            }
+            Box(modifier = Modifier
+                .padding(top = 280.dp, start = 260.dp))
+            {
+                Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(Color.Black)
+                        .padding(10.dp)
+                        .clickable {  })
+            }
+        }
 }
 
 //Awal FormPengajaun
@@ -384,7 +436,7 @@ fun FormPengajuan() {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
-                        onClick = { R.raw.Click
+                        onClick = {
                         },
                         enabled = true,
                         modifier = Modifier

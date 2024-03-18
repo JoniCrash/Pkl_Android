@@ -6,5 +6,4 @@ data class ListPengajuan(
     val namaLengkap : String,
     val paket : String,
     val lokasi : String
-) {
-}
+)
