@@ -1,10 +1,18 @@
 package com.example.layout
 
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import android.widget.EditText
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -55,12 +63,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -75,6 +85,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.android.volley.toolbox.ImageRequest
 
 
@@ -96,14 +107,14 @@ import com.android.volley.toolbox.ImageRequest
 //    AyoMasuk()
 //}
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun FormPengajuanPreview() {
-    FormPengajuan()
-}
+//@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun FormPengajuanPreview() {
+//    FormPengajuan()
+//}
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun previeHomeScreen() {
     HomeScreen()
@@ -117,6 +128,32 @@ fun HomeScreen() {
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.fillMaxSize())
+
+            val context = LocalContext.current
+            val img : Bitmap = BitmapFactory.decodeResource(Resources.getSystem(),android.R.drawable.ic_menu_report_image)
+            val bitmap = remember { mutableStateOf(img) }
+
+            val launcher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.TakePicturePreview()) {
+                if(it!= null){
+                    bitmap.value = it
+                }
+            }
+            val launchImage = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+                if (Build.VERSION.SDK_INT < 28){
+                    bitmap.value = MediaStore.Images.Media.getBitmap(context.contentResolver,it)
+                }
+                else{
+                    val source = it?.let { it1 ->
+                        ImageDecoder.createSource(context.contentResolver,it1)
+                    }
+                    bitmap.value = source?.let { it1 ->
+                        ImageDecoder.decodeBitmap(it1)
+                    }!!
+                }
+            }
+
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -124,7 +161,8 @@ fun HomeScreen() {
                     .padding(100.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.baseline_person_24),
+                    bitmap = bitmap.value.asImageBitmap(),
+                    contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
                         .clip(CircleShape)
@@ -136,6 +174,9 @@ fun HomeScreen() {
                             shape = CircleShape
                         ))
             }
+
+            var showDialog by remember { mutableStateOf(false) }
+
             Box(modifier = Modifier
                 .padding(top = 280.dp, start = 260.dp))
             {
@@ -145,9 +186,72 @@ fun HomeScreen() {
                         .clip(CircleShape)
                         .background(Color.Black)
                         .padding(10.dp)
-                        .clickable {  })
+                        .size(50.dp)
+                        .clickable { showDialog = true }
+                )
             }
+            Column(
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 10.dp)
+            ) {
+                if (showDialog){
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .width(300.dp)
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color.Blue)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(60.dp)
+                        ) {
+                            Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clickable {
+                                        launcher.launch()
+                                        showDialog = false
+                                    })
+                            Text(
+                                text = "Camera",
+                                color = Color.White)
+                        }
+                        Spacer(modifier = Modifier.padding(30.dp))
+                        Column {
+                            Image(painter = painterResource(id = R.drawable.baseline_image_24),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clickable {
+                                        launchImage.launch("image/*")
+                                        showDialog = false
+                                    })
+                            Text(
+                                text = "Galeri",
+                                color = Color.White)
+                        }
+                        Column(modifier = Modifier
+                            .padding(start = 50.dp, bottom = 80.dp))
+                        {
+                            Text(
+                                text = "X",
+                                color = Color.White,
+                                modifier = Modifier
+                                    .clickable { showDialog = false })
+                        }
+                    }
+                }
         }
+
+    }
+
 }
 
 //Awal FormPengajaun
