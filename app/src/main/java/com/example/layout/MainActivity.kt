@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             window.statusBarColor = getColor(R.color.black)
-            AyoLah()
+            HomeScreen()
 //            Column(modifier = Modifier
 //                .fillMaxWidth(),
 //                verticalArrangement = Arrangement.Center,

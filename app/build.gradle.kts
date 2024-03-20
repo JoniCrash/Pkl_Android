@@ -1,6 +1,6 @@
-import org.gradle.internal.impldep.bsh.commands.dir
-import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
-import org.gradle.internal.impldep.com.fasterxml.jackson.core.JsonPointer.compile
+//import org.gradle.internal.impldep.bsh.commands.dir
+//import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
+//import org.gradle.internal.impldep.com.fasterxml.jackson.core.JsonPointer.compile
 
 plugins {
     id("com.android.application")
@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.layout"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -60,12 +60,6 @@ dependencies {
     implementation ("androidx.activity:activity-compose:1.8.2")
     implementation ("androidx.compose.material:material-icons-extended:1.6.3")
     implementation ("androidx.compose.ui:ui-tooling-preview:1.6.3")
-
-    implementation("androidx.room:room-compiler-processing-testing:2.6.1")
-    implementation ("com.android.support:appcompat-v7:28.0.0")
-
-
-
     // location permission
     implementation ("com.google.accompanist:accompanist-permissions:0.34.0")
 
@@ -77,7 +71,6 @@ dependencies {
     implementation("com.google.firebase:firebase-database:20.3.1")
     implementation(platform("androidx.compose:compose-bom:2024.02.02"))
     implementation("com.android.support:support-annotations:28.0.0")
-    implementation("androidx.compose.foundation:foundation-desktop:1.6.3")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.compose.foundation:foundation-android:1.6.3")
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
