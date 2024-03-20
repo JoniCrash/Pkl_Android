@@ -80,6 +80,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-desktop:1.6.3")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.compose.foundation:foundation-android:1.6.3")
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.02"))
 
 

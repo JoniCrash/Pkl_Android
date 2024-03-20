@@ -1,8 +1,10 @@
 package com.example.layout
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat.*
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.media.MediaPlayer
@@ -10,6 +12,8 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.widget.EditText
+import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -48,8 +52,11 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -85,8 +92,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
 import com.android.volley.toolbox.ImageRequest
+import com.google.firebase.Firebase
+import com.google.firebase.storage.storage
+import java.io.ByteArrayOutputStream
 
 
 //@Preview(showBackground = true, showSystemUi = true)
@@ -129,6 +138,7 @@ fun HomeScreen() {
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.fillMaxSize())
 
+            val isUploading = remember { mutableStateOf(false) }
             val context = LocalContext.current
             val img : Bitmap = BitmapFactory.decodeResource(Resources.getSystem(),android.R.drawable.ic_menu_report_image)
             val bitmap = remember { mutableStateOf(img) }
@@ -190,6 +200,39 @@ fun HomeScreen() {
                         .clickable { showDialog = true }
                 )
             }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 100.dp)
+            ) {
+                Button(onClick = {
+                    isUploading.value = true
+                    bitmap.value.let { bitmap ->
+                        uploadImageToFirebase(bitmap,context as ComponentActivity) { succes->
+                            isUploading.value = false
+                            if (succes){
+                                Toast.makeText(context,"Berhasil upload",Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                Toast.makeText(context,"Gagal upload",Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        Color.Blue
+                    )
+                    ) {
+                    Text(
+                        text = "Uploag Image",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold)
+                }
+            }
+
             Column(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -197,7 +240,7 @@ fun HomeScreen() {
                     .fillMaxSize()
                     .padding(bottom = 10.dp)
             ) {
-                if (showDialog){
+                if (showDialog) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -221,7 +264,8 @@ fun HomeScreen() {
                                     })
                             Text(
                                 text = "Camera",
-                                color = Color.White)
+                                color = Color.White
+                            )
                         }
                         Spacer(modifier = Modifier.padding(30.dp))
                         Column {
@@ -235,10 +279,13 @@ fun HomeScreen() {
                                     })
                             Text(
                                 text = "Galeri",
-                                color = Color.White)
+                                color = Color.White
+                            )
                         }
-                        Column(modifier = Modifier
-                            .padding(start = 50.dp, bottom = 80.dp))
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 50.dp, bottom = 80.dp)
+                        )
                         {
                             Text(
                                 text = "X",
@@ -248,10 +295,40 @@ fun HomeScreen() {
                         }
                     }
                 }
-        }
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(450.dp)
+            ) {
+                if(isUploading.value){
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .padding(16.dp),
+                        color = Color.White
+                    )
+                }
+            }
 
     }
 
+}
+
+fun uploadImageToFirebase(bitmap: Bitmap, context: ComponentActivity,callback:(Boolean)->Unit) {
+    val storageRef = Firebase.storage.reference
+    val imageRef = storageRef.child("images/${bitmap}.jpg")
+    val baos = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos)
+    val imageData = baos.toByteArray()
+
+    imageRef.putBytes(imageData).addOnSuccessListener {
+        callback(true)
+    }.addOnFailureListener{
+        callback(false)
+    }
 }
 
 //Awal FormPengajaun
