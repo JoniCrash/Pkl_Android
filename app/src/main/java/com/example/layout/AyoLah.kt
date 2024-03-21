@@ -77,6 +77,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -116,18 +117,18 @@ import java.io.ByteArrayOutputStream
 //    AyoMasuk()
 //}
 
-//@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun FormPengajuanPreview() {
-//    FormPengajuan()
-//}
-
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun previeHomeScreen() {
-    HomeScreen()
+fun FormPengajuanPreview() {
+    FormPengajuan()
 }
+
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//private fun previeHomeScreen() {
+//    HomeScreen()
+//}
 
 @Composable
 fun HomeScreen() {
@@ -177,7 +178,7 @@ fun HomeScreen() {
                     modifier = Modifier
                         .clip(CircleShape)
                         .size(250.dp)
-                        .background(Color.Blue)
+                        //.background(Color.Blue)
                         .border(
                             width = 1.dp,
                             color = Color.White,
@@ -187,14 +188,16 @@ fun HomeScreen() {
 
             var showDialog by remember { mutableStateOf(false) }
 
-            Box(modifier = Modifier
-                .padding(top = 280.dp, start = 260.dp))
+            Box(
+                modifier = Modifier
+                .padding(top = 280.dp, start = 260.dp)
+            )
             {
                 Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
                     contentDescription = null,
                     modifier = Modifier
                         .clip(CircleShape)
-                        .background(Color.Black)
+                        //.background(Color.Black)
                         .padding(10.dp)
                         .size(50.dp)
                         .clickable { showDialog = true }
@@ -363,6 +366,32 @@ fun FormPengajuan() {
 
     var nameError by remember { mutableStateOf(false) }
 
+    var showimgg by remember { mutableStateOf(false) }
+    val isUploading = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val img : Bitmap = BitmapFactory.decodeResource(Resources.getSystem(),android.R.drawable.ic_menu_report_image)
+    val bitmap = remember { mutableStateOf(img) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()) {
+        if(it!= null){
+            bitmap.value = it
+        }
+    }
+    val launchImage = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+        if (Build.VERSION.SDK_INT < 28){
+            bitmap.value = MediaStore.Images.Media.getBitmap(context.contentResolver,it)
+        }
+        else{
+            val source = it?.let { it1 ->
+                ImageDecoder.createSource(context.contentResolver,it1)
+            }
+            bitmap.value = source?.let { it1 ->
+                ImageDecoder.decodeBitmap(it1)
+            }!!
+        }
+    }
+
 //    fun validateName() {
 //        nameError = name.isEmpty()
 //    }
@@ -405,7 +434,9 @@ fun FormPengajuan() {
         ) {
 
             Spacer(modifier = Modifier.padding(8.dp))
-            Text(text = "Form Pengajuan Pemasangan WiFi")
+            Text(
+                text = "FORM PENGAJUAN PEMASANGAN WIFI COMET",
+                fontWeight = FontWeight.Bold)
             Card {
 
                 Column(
@@ -417,6 +448,99 @@ fun FormPengajuan() {
                 )
 
                 {
+                    
+                    //Awal Upload image
+
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 1.dp)
+                    )
+                    {
+                        Button(
+                            onClick = { /*TODO*/ },
+                            modifier = Modifier
+                                .clickable { showimgg = true }
+                        ) {
+                            Text(
+                                text = "Upload KTP",
+                                fontWeight = FontWeight.Bold)
+
+                        }
+                        Image(
+                            bitmap = bitmap.value.asImageBitmap(),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(start = 200.dp)
+                                .clip(RectangleShape)
+                                .size(width = 140.dp,height = 80.dp)
+                                //.background(Color.Blue)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Black,
+                                    shape = RectangleShape
+                                ))
+
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 1.dp)
+                    )
+                    {
+                        Button(
+                            onClick = { /*TODO*/ },
+                            modifier = Modifier
+                                .clickable { showimgg = true }
+                        ) {
+                            Text(
+                                text = "Poto Depan Rumah",
+                                fontWeight = FontWeight.Bold)
+
+                        }
+                        Image(
+                            bitmap = bitmap.value.asImageBitmap(),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(start = 200.dp)
+                                .clip(RectangleShape)
+                                .size(width = 140.dp,height = 80.dp)
+                                //.background(Color.Blue)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Black,
+                                    shape = RectangleShape
+                                ))
+
+                    }
+
+//                    Button(onClick = {
+//                        isUploading.value = true
+//                        bitmap.value.let { bitmap ->
+//                            uploadImageToFirebase(bitmap,context as ComponentActivity) { succes->
+//                                isUploading.value = false
+//                                if (succes){
+//                                    Toast.makeText(context,"Berhasil upload",Toast.LENGTH_SHORT).show()
+//                                }
+//                                else {
+//                                    Toast.makeText(context,"Gagal upload",Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
+//                        }
+//                    },
+//                        colors = ButtonDefaults.buttonColors(
+//                            Color.Blue
+//                        )
+//                    ) {
+//                        Text(
+//                            text = "Uploag Image",
+//                            fontWeight = FontWeight.Bold)
+//                    }
+
+
+                // Akhir upload Image
+
 
                     TextField(
                         value = namaLengkap,
