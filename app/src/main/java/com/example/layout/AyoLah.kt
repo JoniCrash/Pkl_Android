@@ -1,5 +1,6 @@
 package com.example.layout
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
@@ -12,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.widget.EditText
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -41,6 +43,8 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -52,8 +56,6 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -61,10 +63,26 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+//import androidx.compose.material3.Button
+//import androidx.compose.material3.ButtonColors
+//import androidx.compose.material3.ButtonDefaults
+//import androidx.compose.material3.Card
+//import androidx.compose.material3.CardDefaults
+//import androidx.compose.material3.CircularProgressIndicator
+//import androidx.compose.material3.Divider
+//import androidx.compose.material3.Icon
+//import androidx.compose.material3.IconButton
+//import androidx.compose.material3.MaterialTheme
+//import androidx.compose.material3.RadioButton
+//import androidx.compose.material3.Surface
+//import androidx.compose.material3.Text
+//import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -79,23 +97,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Button
+import androidx.compose.ui.semantics.Role.Companion.RadioButton
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.SemanticsProperties.Text
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.android.volley.toolbox.ImageRequest
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
+import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 
 
@@ -117,12 +146,13 @@ import java.io.ByteArrayOutputStream
 //    AyoMasuk()
 //}
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun FormPengajuanPreview() {
-    FormPengajuan()
-}
+
+//@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun FormPengajuanPreview() {
+//    FormPengajuan()
+//}
 
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable
@@ -131,194 +161,194 @@ fun FormPengajuanPreview() {
 //}
 
 @Composable
-fun HomeScreen() {
-        Box {
-            Image(
-                painter = painterResource(id = R.drawable.comet_dark),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier.fillMaxSize())
-
-            val isUploading = remember { mutableStateOf(false) }
-            val context = LocalContext.current
-            val img : Bitmap = BitmapFactory.decodeResource(Resources.getSystem(),android.R.drawable.ic_menu_report_image)
-            val bitmap = remember { mutableStateOf(img) }
-
-            val launcher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.TakePicturePreview()) {
-                if(it!= null){
-                    bitmap.value = it
-                }
-            }
-            val launchImage = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
-                if (Build.VERSION.SDK_INT < 28){
-                    bitmap.value = MediaStore.Images.Media.getBitmap(context.contentResolver,it)
-                }
-                else{
-                    val source = it?.let { it1 ->
-                        ImageDecoder.createSource(context.contentResolver,it1)
-                    }
-                    bitmap.value = source?.let { it1 ->
-                        ImageDecoder.decodeBitmap(it1)
-                    }!!
-                }
-            }
-
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(100.dp)
-            ) {
-                Image(
-                    bitmap = bitmap.value.asImageBitmap(),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(250.dp)
-                        //.background(Color.Blue)
-                        .border(
-                            width = 1.dp,
-                            color = Color.White,
-                            shape = CircleShape
-                        ))
-            }
-
-            var showDialog by remember { mutableStateOf(false) }
-
-            Box(
-                modifier = Modifier
-                .padding(top = 280.dp, start = 260.dp)
-            )
-            {
-                Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        //.background(Color.Black)
-                        .padding(10.dp)
-                        .size(50.dp)
-                        .clickable { showDialog = true }
-                )
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 100.dp)
-            ) {
-                Button(onClick = {
-                    isUploading.value = true
-                    bitmap.value.let { bitmap ->
-                        uploadImageToFirebase(bitmap,context as ComponentActivity) { succes->
-                            isUploading.value = false
-                            if (succes){
-                                Toast.makeText(context,"Berhasil upload",Toast.LENGTH_SHORT).show()
-                            }
-                            else {
-                                Toast.makeText(context,"Gagal upload",Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                },
-                    colors = ButtonDefaults.buttonColors(
-                        Color.Blue
-                    )
-                    ) {
-                    Text(
-                        text = "Uploag Image",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold)
-                }
-            }
-
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 10.dp)
-            ) {
-                if (showDialog) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .width(300.dp)
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.Blue)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(60.dp)
-                        ) {
-                            Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .clickable {
-                                        launcher.launch()
-                                        showDialog = false
-                                    })
-                            Text(
-                                text = "Camera",
-                                color = Color.White
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(30.dp))
-                        Column {
-                            Image(painter = painterResource(id = R.drawable.baseline_image_24),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .clickable {
-                                        launchImage.launch("image/*")
-                                        showDialog = false
-                                    })
-                            Text(
-                                text = "Galeri",
-                                color = Color.White
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .padding(start = 50.dp, bottom = 80.dp)
-                        )
-                        {
-                            Text(
-                                text = "X",
-                                color = Color.White,
-                                modifier = Modifier
-                                    .clickable { showDialog = false })
-                        }
-                    }
-                }
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(450.dp)
-            ) {
-                if(isUploading.value){
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .padding(16.dp),
-                        color = Color.White
-                    )
-                }
-            }
-
-    }
-
-}
+//fun HomeScreen() {
+//        Box {
+//            Image(
+//                painter = painterResource(id = R.drawable.comet_dark),
+//                contentDescription = null,
+//                contentScale = ContentScale.FillBounds,
+//                modifier = Modifier.fillMaxSize())
+//
+//            val isUploading = remember { mutableStateOf(false) }
+//            val context = LocalContext.current
+//            val img : Bitmap = BitmapFactory.decodeResource(Resources.getSystem(),android.R.drawable.ic_menu_report_image)
+//            val bitmap = remember { mutableStateOf(img) }
+//
+//            val launcher = rememberLauncherForActivityResult(
+//                contract = ActivityResultContracts.TakePicturePreview()) {
+//                if(it!= null){
+//                    bitmap.value = it
+//                }
+//            }
+//            val launchImage = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+//                if (Build.VERSION.SDK_INT < 28){
+//                    bitmap.value = MediaStore.Images.Media.getBitmap(context.contentResolver,it)
+//                }
+//                else{
+//                    val source = it?.let { it1 ->
+//                        ImageDecoder.createSource(context.contentResolver,it1)
+//                    }
+//                    bitmap.value = source?.let { it1 ->
+//                        ImageDecoder.decodeBitmap(it1)
+//                    }!!
+//                }
+//            }
+//
+//
+//            Column(
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(100.dp)
+//            ) {
+//                Image(
+//                    bitmap = bitmap.value.asImageBitmap(),
+//                    contentScale = ContentScale.Crop,
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .clip(CircleShape)
+//                        .size(250.dp)
+//                        //.background(Color.Blue)
+//                        .border(
+//                            width = 1.dp,
+//                            color = Color.White,
+//                            shape = CircleShape
+//                        ))
+//            }
+//
+//            var showDialog by remember { mutableStateOf(false) }
+//
+//            Box(
+//                modifier = Modifier
+//                .padding(top = 280.dp, start = 260.dp)
+//            )
+//            {
+//                Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .clip(CircleShape)
+//                        //.background(Color.Black)
+//                        .padding(10.dp)
+//                        .size(50.dp)
+//                        .clickable { showDialog = true }
+//                )
+//            }
+//
+//            Column(
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                verticalArrangement = Arrangement.Center,
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(top = 100.dp)
+//            ) {
+//                Button(onClick = {
+//                    isUploading.value = true
+//                    bitmap.value.let { bitmap ->
+//                        uploadImageToFirebase(bitmap,context as ComponentActivity) { succes->
+//                            isUploading.value = false
+//                            if (succes){
+//                                Toast.makeText(context,"Berhasil upload",Toast.LENGTH_SHORT).show()
+//                            }
+//                            else {
+//                                Toast.makeText(context,"Gagal upload",Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
+//                    }
+//                },
+//                    colors = ButtonDefaults.buttonColors(
+//                        Color.Blue
+//                    )
+//                    ) {
+//                    Text(
+//                        text = "Uploag Image",
+//                        fontSize = 30.sp,
+//                        fontWeight = FontWeight.Bold)
+//                }
+//            }
+//
+//            Column(
+//                verticalArrangement = Arrangement.Bottom,
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(bottom = 10.dp)
+//            ) {
+//                if (showDialog) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.Center,
+//                        modifier = Modifier
+//                            .width(300.dp)
+//                            .height(200.dp)
+//                            .clip(RoundedCornerShape(10.dp))
+//                            .background(Color.Blue)
+//                    ) {
+//                        Column(
+//                            modifier = Modifier
+//                                .padding(60.dp)
+//                        ) {
+//                            Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
+//                                contentDescription = null,
+//                                modifier = Modifier
+//                                    .size(50.dp)
+//                                    .clickable {
+//                                        launcher.launch()
+//                                        showDialog = false
+//                                    })
+//                            Text(
+//                                text = "Camera",
+//                                color = Color.White
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.padding(30.dp))
+//                        Column {
+//                            Image(painter = painterResource(id = R.drawable.baseline_image_24),
+//                                contentDescription = null,
+//                                modifier = Modifier
+//                                    .size(50.dp)
+//                                    .clickable {
+//                                        launchImage.launch("image/*")
+//                                        showDialog = false
+//                                    })
+//                            Text(
+//                                text = "Galeri",
+//                                color = Color.White
+//                            )
+//                        }
+//                        Column(
+//                            modifier = Modifier
+//                                .padding(start = 50.dp, bottom = 80.dp)
+//                        )
+//                        {
+//                            Text(
+//                                text = "X",
+//                                color = Color.White,
+//                                modifier = Modifier
+//                                    .clickable { showDialog = false })
+//                        }
+//                    }
+//                }
+//            }
+//
+//            Column(
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                verticalArrangement = Arrangement.Center,
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .height(450.dp)
+//            ) {
+//                if(isUploading.value){
+//                    CircularProgressIndicator(
+//                        modifier = Modifier
+//                            .padding(16.dp),
+//                        color = Color.White
+//                    )
+//                }
+//            }
+//
+//    }
+//
+//}
 
 fun uploadImageToFirebase(bitmap: Bitmap, context: ComponentActivity,callback:(Boolean)->Unit) {
     val storageRef = Firebase.storage.reference
@@ -338,7 +368,6 @@ fun uploadImageToFirebase(bitmap: Bitmap, context: ComponentActivity,callback:(B
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun FormPengajuan() {
-
     val showMenu = remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
@@ -434,9 +463,9 @@ fun FormPengajuan() {
         ) {
 
             Spacer(modifier = Modifier.padding(8.dp))
-            Text(
-                text = "FORM PENGAJUAN PEMASANGAN WIFI COMET",
-                fontWeight = FontWeight.Bold)
+            BasicText(
+                text = "FORM PENGAJUAN PEMASANGAN WIFI COMET")
+
             Card {
 
                 Column(
@@ -448,7 +477,7 @@ fun FormPengajuan() {
                 )
 
                 {
-                    
+
                     //Awal Upload image
 
                     Box(
@@ -463,7 +492,8 @@ fun FormPengajuan() {
                         ) {
                             Text(
                                 text = "Upload KTP",
-                                fontWeight = FontWeight.Bold)
+                                fontWeight = FontWeight.Bold
+                            )
 
                         }
                         Image(
@@ -473,7 +503,7 @@ fun FormPengajuan() {
                             modifier = Modifier
                                 .padding(start = 200.dp)
                                 .clip(RectangleShape)
-                                .size(width = 140.dp,height = 80.dp)
+                                .size(width = 140.dp, height = 80.dp)
                                 //.background(Color.Blue)
                                 .border(
                                     width = 1.dp,
@@ -493,9 +523,8 @@ fun FormPengajuan() {
                             modifier = Modifier
                                 .clickable { showimgg = true }
                         ) {
-                            Text(
-                                text = "Poto Depan Rumah",
-                                fontWeight = FontWeight.Bold)
+                            BasicText(
+                                text = "Poto Depan Rumah")
 
                         }
                         Image(
@@ -505,7 +534,7 @@ fun FormPengajuan() {
                             modifier = Modifier
                                 .padding(start = 200.dp)
                                 .clip(RectangleShape)
-                                .size(width = 140.dp,height = 80.dp)
+                                .size(width = 140.dp, height = 80.dp)
                                 //.background(Color.Blue)
                                 .border(
                                     width = 1.dp,
@@ -539,7 +568,7 @@ fun FormPengajuan() {
 //                    }
 
 
-                // Akhir upload Image
+                    // Akhir upload Image
 
 
                     TextField(
@@ -691,7 +720,7 @@ fun FormPengajuan() {
                             .fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     Button(onClick = { /*TODO*/ },
                         modifier = Modifier.fillMaxWidth()) {
                         Text(text = "Ambil Gambar")
@@ -756,6 +785,8 @@ fun FormPengajuan() {
         }
     }
 }//Akhir FormPengauan
+
+    
 
 @Composable
 fun AyoLah() {

@@ -56,10 +56,13 @@ android {
 }
 
 dependencies {
+    implementation ("pub.devrel:easypermissions:3.0.0")
+    implementation ("com.vmadalin:easypermissions-ktx:1.0.0")
+    implementation ("com.google.android.gms:play-services-location:21.2.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation ("androidx.activity:activity-compose:1.8.2")
-    implementation ("androidx.compose.material:material-icons-extended:1.6.3")
-    implementation ("androidx.compose.ui:ui-tooling-preview:1.6.3")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.4")
+    implementation ("androidx.compose.ui:ui-tooling-preview:1.6.4")
     // location permission
     implementation ("com.google.accompanist:accompanist-permissions:0.34.0")
 
@@ -72,8 +75,10 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.02.02"))
     implementation("com.android.support:support-annotations:28.0.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.compose.foundation:foundation-android:1.6.3")
+    implementation("androidx.compose.foundation:foundation-android:1.6.4")
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("androidx.compose.material3:material3-android:1.2.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.02"))
 
 
@@ -94,9 +99,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.02"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.02"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.00"))
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
