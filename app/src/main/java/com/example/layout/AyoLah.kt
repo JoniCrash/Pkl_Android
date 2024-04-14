@@ -160,7 +160,7 @@ import java.io.ByteArrayOutputStream
 //    HomeScreen()
 //}
 
-@Composable
+//@Composable
 //fun HomeScreen() {
 //        Box {
 //            Image(
@@ -350,19 +350,19 @@ import java.io.ByteArrayOutputStream
 //
 //}
 
-fun uploadImageToFirebase(bitmap: Bitmap, context: ComponentActivity,callback:(Boolean)->Unit) {
-    val storageRef = Firebase.storage.reference
-    val imageRef = storageRef.child("images/${bitmap}.jpg")
-    val baos = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos)
-    val imageData = baos.toByteArray()
-
-    imageRef.putBytes(imageData).addOnSuccessListener {
-        callback(true)
-    }.addOnFailureListener{
-        callback(false)
-    }
-}
+//fun uploadImageToFirebase(bitmap: Bitmap, context: ComponentActivity,callback:(Boolean)->Unit) {
+//    val storageRef = Firebase.storage.reference
+//    val imageRef = storageRef.child("images/${bitmap}.jpg")
+//    val baos = ByteArrayOutputStream()
+//    bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos)
+//    val imageData = baos.toByteArray()
+//
+//    imageRef.putBytes(imageData).addOnSuccessListener {
+//        callback(true)
+//    }.addOnFailureListener{
+//        callback(false)
+//    }
+//}
 
 //Awal FormPengajaun
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -372,7 +372,6 @@ fun FormPengajuan() {
     var showDialog by remember { mutableStateOf(false) }
     val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
     val scrollState = rememberScrollState()
-
     // Loop untuk membuat RadioButton dengan TextField untuk setiap pilihan
     val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
     // MutableState untuk menyimpan opsi yang dipilih
