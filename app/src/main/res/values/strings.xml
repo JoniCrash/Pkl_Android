@@ -15,7 +15,7 @@
     <string name="Lokasi">Lokasi</string>
 
 
-
     <string name="select">Select</string>
     <string name="upload">Upload</string>
+    <string name="title_activity_pengajuan">Pengajuan</string>
 </resources>
