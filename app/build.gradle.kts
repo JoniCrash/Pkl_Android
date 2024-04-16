@@ -79,6 +79,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.compose.material3:material3-android:1.2.1")
+    implementation("androidx.privacysandbox.tools:tools-core:1.0.0-alpha08")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.02"))
 
 

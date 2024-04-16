@@ -9,6 +9,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -81,7 +82,7 @@ class ContohDaftar : ComponentActivity() {
 //            Logika input data ke server
             fun  inputData() {
             val stringRequest = StringRequest(Request.Method.POST, urlInsert,
-                { response -> keterangan = "Berhasil mendaftar "
+                { response -> Toast.makeText(this,"Berhasil Mendaftar",Toast.LENGTH_LONG).show()
                     coroutineScope.launch {
                         delay(5000)
                     }
@@ -90,8 +91,7 @@ class ContohDaftar : ComponentActivity() {
                     startActivity(masuk)
                     finish()},
                 {
-                    keterangan =
-                        "Eror input data! periksa koneksi anda, lalu ulangi"
+                    Toast.makeText(this,"Gagal Mendaftar",Toast.LENGTH_LONG).show()
                     coroutineScope.launch {
                         delay(5000) // Waktu jeda dalam milidetik (misalnya, 2000 ms = 2 detik)
                         // Panggil fungsi callback untuk berpindah ke halaman atau tindakan lain

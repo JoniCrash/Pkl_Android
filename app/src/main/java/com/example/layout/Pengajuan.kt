@@ -1,6 +1,8 @@
 package com.example.layout
 
 import android.Manifest
+import android.app.DownloadManager.Request
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -14,6 +16,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -81,16 +84,41 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.Response
+import com.android.volley.toolbox.Volley
 import com.example.layout.ui.theme.LayoutTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class Pengajuan : ComponentActivity() {
     var locationManager: LocationManager? = null
+    val urlKirim = "http://192.168.22.2/CRUDVoley/insert.php"
+    val queue = Volley.newRequestQueue(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             pengajuan()
+
+
+            //
         }
+    }
+
+    fun inputData(){
+        val kirimData = StringRequest(
+            com.android.volley.Request.Method.GET, urlKirim,
+            { response -> Toast.makeText(this,"Berhasil",Toast.LENGTH_SHORT).show()
+                // Display the first 500 characters of the response string.
+            },
+            { Toast.makeText(this,"gagal",Toast.LENGTH_SHORT).show()
+            })
+
+// Add the request to the RequestQueue.
+        queue.add(kirimData)
+        //
+
     }
     fun GetLocation(locationState: MutableState<Location?>, adres: MutableState<String?>) {
         try {
@@ -140,6 +168,8 @@ class Pengajuan : ComponentActivity() {
             e.printStackTrace()
         }
     }
+
+
     @Preview(showBackground = true, showSystemUi = true)
     @Composable
     private fun previewPengajuan() {
@@ -158,7 +188,7 @@ class Pengajuan : ComponentActivity() {
         val scrollState = rememberScrollState()
         // Loop untuk membuat RadioButton dengan TextField untuk setiap pilihan
         val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
-        // MutableState untuk menyimpan opsi yang dipilih
+        // untuk menyimpan opsi yang dipilih
         var pilihanPaket by remember { mutableStateOf(opsiPaket[0]) }
         // MutableState untuk menyimpan teks dalam TextField
         var textValue by remember { mutableStateOf("") }
@@ -167,10 +197,6 @@ class Pengajuan : ComponentActivity() {
         var nik by remember { mutableStateOf("") }
         var noHp by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
-
-        var paket by remember { mutableStateOf("") }
-        var lokasi by remember { mutableStateOf("") }
-
 
         var password by remember { mutableStateOf("") }
         val showPassword = remember { mutableStateOf(false) }
@@ -219,29 +245,29 @@ class Pengajuan : ComponentActivity() {
         }
 
         //Validasi jika texfield kosong
-//    @Composable
-//    fun validasiJikaKosong() {
-//        namaLengkapError = namaLengkap.isEmpty()
-//        nikError = nik.isEmpty()
-//        noHpError = noHp.isEmpty()
-//        emailError = email.isEmpty()
+
+//    fun validasiJikaKosong(): Boolean {
+////                true -> Text("NIK tidak boleh kosong", color = MaterialTheme.colorScheme.error)
+////                false -> Text("")
 //
-//        TextField(
-//            value = namaLengkap,
-//            onValueChange = { namaLengkap = it },
-//            label = { Text("Masukan Nama Lengkap") },
-//            isError = namaLengkapError,
-//            singleLine = true
-//        )
-//        if (namaLengkapError) {
-//            Text("Nama Lengkap tidak boleh kosong", color = MaterialTheme.colorScheme.error)
+//        when (namaLengkapError) {
+//            true -> namaLengkap = ""
+//            false -> namaLengkapError
 //        }
+//        when (nikError) {
+//            true -> nik = ""
+//            false -> nikError
+//        }
+//        when (noHpError) {
+//            true -> noHp = ""
+//            false -> noHpError
+//        }
+//        when (emailError) {
+//            true -> email = ""
+//            false -> emailError
+//        }
+//        return validasiJikaKosong()
 //    }
-
-
-//        Button(onClick = { validasiJikaKosong() }) {
-//            Text("Submit")
-//        }
 
         //Akhir Validasi jika textfield kosong
 
@@ -518,11 +544,11 @@ class Pengajuan : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth()) {
                             Text(text = "Ambil Gambar")
                         }
-
                         // Akhir upload Image
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(
                             onClick = {
+                                      inputData()
                             },
                             enabled = true,
                             modifier = Modifier
