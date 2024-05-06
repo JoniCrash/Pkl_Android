@@ -193,11 +193,11 @@ import java.io.ByteArrayOutputStream
 //    AyoMasuk()
 //}
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//private fun previeHomeScreen() {
-//    HomeScreen()
-//}
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun previeHomeScreen() {
+    HomeScreen()
+}
 
 
 //Awal Contoh Upload Image
@@ -313,7 +313,8 @@ fun HomeScreen() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 10.dp)
-            ) {
+            )
+            {
                 if (showDialog) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

@@ -1,7 +1,10 @@
 package com.example.layout
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DownloadManager.Request
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -15,7 +18,9 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media.getBitmap
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -53,6 +58,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -79,11 +85,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -93,12 +101,14 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 class Pengajuan : ComponentActivity() {
-    var locationManager: LocationManager? = null
+//    var locationManager: LocationManager? = null
+
     val urlKirim = "http://192.168.22.2/CRUDVoley/insert.php"
-    val queue = Volley.newRequestQueue(this)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
+
             pengajuan()
 
 
@@ -107,8 +117,8 @@ class Pengajuan : ComponentActivity() {
     }
 
     fun inputData(){
-        val kirimData = StringRequest(
-            com.android.volley.Request.Method.GET, urlKirim,
+        val queue = Volley.newRequestQueue(this)
+        val kirimData = StringRequest(com.android.volley.Request.Method.GET, urlKirim,
             { response -> Toast.makeText(this,"Berhasil",Toast.LENGTH_SHORT).show()
                 // Display the first 500 characters of the response string.
             },
@@ -118,30 +128,29 @@ class Pengajuan : ComponentActivity() {
 // Add the request to the RequestQueue.
         queue.add(kirimData)
         //
-
     }
-    fun GetLocation(locationState: MutableState<Location?>, adres: MutableState<String?>) {
-        try {
-            locationManager = applicationContext.getSystemService(ComponentActivity.LOCATION_SERVICE) as LocationManager
 
+    fun GetLocation(locationState: MutableState<Location?>, addressState: MutableState<String?>) {
+        try {
+            val locationManager = applicationContext.getSystemService(LOCATION_SERVICE) as LocationManager
             if (ContextCompat.checkSelfPermission(
                     this@Pengajuan, Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
-                    this@Pengajuan, arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ), 100
+                    this@Pengajuan, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100
                 )
+                return
             }
-            locationManager!!.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 5000,
                 5f,
                 object : LocationListener {
+                    @Suppress("DEPRECATION")
                     override fun onLocationChanged(location: Location) {
-                        //mengambil latitude dan longitude
+                        // Mendapatkan latitude dan longitude
                         locationState.value = location
-                        //mengambil lokasi
+                        // Mendapatkan alamat
                         try {
                             val geocoder = Geocoder(this@Pengajuan, Locale.getDefault())
                             val addresses: MutableList<Address>? = geocoder.getFromLocation(
@@ -149,15 +158,18 @@ class Pengajuan : ComponentActivity() {
                                 location.longitude,
                                 1
                             )
-                            val address = addresses?.get(0)?.getAddressLine(0)
-                            adres.value = address
-
+                            if (addresses != null && addresses.isNotEmpty()) {
+                                val address = addresses[0].getAddressLine(0)
+                                addressState.value = address
+                            } else {
+                                addressState.value = "Tidak dapat menemukan alamat"
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
+                            addressState.value = "Terjadi kesalahan saat mendapatkan alamat"
                         }
                     }
 
-                    // Implementasi metode lain dari LocationListener interface di sini
                     @Deprecated("Deprecated in Java")
                     override fun onStatusChanged(provider: String?, status: Int, extra: Bundle?) {}
                     override fun onProviderEnabled(provider: String) {}
@@ -170,9 +182,10 @@ class Pengajuan : ComponentActivity() {
     }
 
 
+
     @Preview(showBackground = true, showSystemUi = true)
     @Composable
-    private fun previewPengajuan() {
+    private fun PreviewPengajuan() {
         pengajuan()
     }
     @Composable
@@ -182,9 +195,9 @@ class Pengajuan : ComponentActivity() {
         val adres = remember { mutableStateOf<String?>(null) }
         val location = locationState.value
         val text = remember { mutableStateOf(false) }
-        val showMenu = remember { mutableStateOf(false) }
-        var showDialog by remember { mutableStateOf(false) }
-        val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
+        //val showMenu = remember { mutableStateOf(false) }
+        //var showDialog by remember { mutableStateOf(false) }
+        //val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
         val scrollState = rememberScrollState()
         // Loop untuk membuat RadioButton dengan TextField untuk setiap pilihan
         val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
@@ -232,7 +245,8 @@ class Pengajuan : ComponentActivity() {
         }
         val launchImage = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
             if (Build.VERSION.SDK_INT < 28){
-                bitmap.value = MediaStore.Images.Media.getBitmap(context.contentResolver,it)
+                @Suppress("DEPRECATION")
+                bitmap.value = getBitmap(context.contentResolver,it)
             }
             else{
                 val source = it?.let { it1 ->
@@ -307,7 +321,7 @@ class Pengajuan : ComponentActivity() {
                             .fillMaxSize()
                     )
                     {
-                        TextField(
+                        OutlinedTextField(
                             value = namaLengkap,
                             onValueChange = {
                                 namaLengkap = it},
@@ -329,7 +343,7 @@ class Pengajuan : ComponentActivity() {
                                 .fillMaxWidth()
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        TextField(
+                        OutlinedTextField(
                             value = nik,
                             onValueChange = { nik = it },
                             isError = nikError,
@@ -353,7 +367,7 @@ class Pengajuan : ComponentActivity() {
 
 
                         Spacer(modifier = Modifier.height(8.dp))
-                        TextField(
+                        OutlinedTextField(
                             value = noHp,
                             onValueChange = { noHp = it },
                             isError = noHpError,
@@ -375,7 +389,7 @@ class Pengajuan : ComponentActivity() {
                                 .fillMaxWidth()
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        TextField(
+                        OutlinedTextField(
                             value = email,
                             onValueChange = { email = it },
                             isError = emailError,
@@ -423,7 +437,7 @@ class Pengajuan : ComponentActivity() {
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                         }
-                        TextField(
+                        OutlinedTextField(
                             value = if (location != null) "${location.latitude}, ${location.longitude}" else "",
                             onValueChange = { text },
                             label = { Text("Titik Kordinat") },
@@ -436,7 +450,7 @@ class Pengajuan : ComponentActivity() {
                             singleLine = true,
 
                             )
-                        TextField(
+                        OutlinedTextField(
                             value = adres.value?:"",
                             onValueChange = { text },
                             label = { Text("Alamat Pemasangan") },
