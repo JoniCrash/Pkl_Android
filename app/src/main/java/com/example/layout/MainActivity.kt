@@ -41,7 +41,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddHome
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
@@ -68,6 +70,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -429,20 +432,24 @@ class MainActivity : ComponentActivity() {
                                     contentDescription = null
                                 )
                             },
-                            singleLine = true,
-
+                            singleLine = true
                             )
                         OutlinedTextField(
                             value = adres.value?:"",
                             onValueChange = { text },
                             label = { Text("Alamat Pemasangan") },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = (Icons.Default.Home),
+                                    contentDescription = null
+                                )
+                            },
                             singleLine = false)
-
                         Button(
-                            onClick = {
-                                GetLocation(locationState,adres)
-                            }) {
-                            Text(text = "Cari Lokasi")
+                            onClick = {GetLocation(locationState,adres)},
+                            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange)),) {
+                            Text(text = "Cari Lokasi",
+                                color = colorResource(id = R.color.black))
                         }
                         Spacer(modifier = Modifier.height(8.dp))
 
@@ -454,11 +461,13 @@ class MainActivity : ComponentActivity() {
                         )
                         {
                             Button(
-                                onClick = { showDialogKtp = true }
+                                onClick = { showDialogKtp = true },
+                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange))
                             ) {
                                 Text(
                                     text = "Upload KTP",
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(id = R.color.black)
                                 )
 
                             }
@@ -554,10 +563,12 @@ class MainActivity : ComponentActivity() {
                         )
                         {
                             Button(
-                                onClick = { showDialogDepanRumah =true }
+                                onClick = { showDialogDepanRumah =true },
+                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange)),
                             ) {
                                 Text(
-                                    text = "Poto Depan Rumah")
+                                    text = "Poto Depan Rumah",
+                                    color = colorResource(id = R.color.black))
                             }
                             Image(
                                 bitmap = bitmapDepanRumah.value.asImageBitmap(),
@@ -652,11 +663,14 @@ class MainActivity : ComponentActivity() {
                                 inputData()
                             },
                             enabled = true,
+                            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange)),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 16.dp)
                         ) {
-                            Text(text = "PENGAJUAN")
+                            Text(
+                                text = "PENGAJUAN",
+                                color = colorResource(id = R.color.black))
                         }
 
                     }
