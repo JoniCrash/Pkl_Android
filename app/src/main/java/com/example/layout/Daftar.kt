@@ -48,6 +48,7 @@ import androidx.core.content.ContextCompat.startActivity
 import com.example.layout.ui.theme.LayoutTheme
 
 class Daftar : ComponentActivity() {
+    val userDaftar = "http://192.168.22.2/BackEndPKL/user_app.php"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

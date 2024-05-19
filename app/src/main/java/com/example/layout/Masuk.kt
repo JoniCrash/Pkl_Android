@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.example.layout.ui.theme.LayoutTheme
 
 class Masuk : ComponentActivity() {
+    val userMasuk = "http://192.168.22.2/BackEndPKL/user_app.php"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

@@ -340,28 +340,3 @@ class Dashboard : ComponentActivity() {
 //
 //        )
 //}
-//
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun dashboardPreview() {
-//    LayoutTheme {
-//        dashboard()
-//    }
-//}
-
-
-//@Composable
-//fun Greeting(name: String, modifier: Modifier = Modifier) {
-//    Text(
-//        text = "Hello $name!",
-//        modifier = modifier
-//    )
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    LayoutTheme {
-//        Greeting("Android")
-//    }
-//}
