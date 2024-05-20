@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            pengajuan()
+            ppengajuan()
         }
     }
 
@@ -163,10 +163,10 @@ class MainActivity : ComponentActivity() {
     @Preview(showBackground = true, showSystemUi = true)
     @Composable
     private fun PreviewPengajuan() {
-        pengajuan()
+        ppengajuan()
     }
     @Composable
-    fun pengajuan() {
+    fun ppengajuan() {
         MyTheme {
 
 

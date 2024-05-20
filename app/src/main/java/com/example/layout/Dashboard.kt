@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.layout.ui.theme.LayoutTheme
 import com.example.layout.ui.theme.Noted
-import com.example.layout.ui.theme.topAppBar
 
 class Dashboard : ComponentActivity() {
 

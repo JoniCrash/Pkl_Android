@@ -3,6 +3,7 @@ package com.example.layout
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -45,16 +47,20 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.layout.ui.theme.LayoutTheme
 
 class Daftar : ComponentActivity() {
-    val userDaftar = "http://192.168.22.2/BackEndPKL/user_app.php"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             CompDaftar()
         }
     }
+
 }
 
 
@@ -65,6 +71,8 @@ private fun PrevCompDaftar() {
 }
 @Composable
 fun CompDaftar() {
+    val context = LocalContext.current
+    val networkManager = NetworkManager(context)
     var user by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
@@ -168,7 +176,17 @@ fun CompDaftar() {
                 )
                 // Button to Show Entered Text
                 Button(
-                    onClick = { Masuk()
+                    onClick = {
+                              networkManager.userDaftar(object : NetworkCallback {
+                                  override fun onSuccess(response: String) {
+                                      Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
+                                      startActivity(context, Intent(context, Masuk::class.java), null)
+                                  }
+
+                                  override fun onFailure(error: Exception) {
+                                      Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+                                  }
+                              })
                     },
                     enabled = true,
                     colors = buttonColors(colorResource(id = R.color.orange)),

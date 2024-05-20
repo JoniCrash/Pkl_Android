@@ -2,6 +2,7 @@ package com.example.layout
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -35,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -45,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import com.example.layout.ui.theme.LayoutTheme
 
 class Masuk : ComponentActivity() {
-    val userMasuk = "http://192.168.22.2/BackEndPKL/user_app.php"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -62,6 +63,8 @@ private fun PrevCompMasuk() {
 }
 @Composable
 fun CompMasuk() {
+    val context = LocalContext.current
+    val networkManager = NetworkManager(context)
     var user by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
     val userError = user.isEmpty()
@@ -138,7 +141,22 @@ fun CompMasuk() {
                 )
                 // Button to Show Entered Text
                 Button(
-                    onClick = { Dashboard()},
+                    onClick = {
+                              networkManager.userMasuk( object :NetworkCallback {
+                                  override fun onSuccess(response: String) {
+                                      Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
+                                      val intent = Intent(context, Dashboard::class.java)
+                                      context.startActivity(intent)
+                                  }
+
+                                  override fun onFailure(error: Exception) {
+                                      Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+                                      val intent = Intent(context, Masuk::class.java)
+                                      context.startActivity(intent)
+                                  }
+                              })
+
+                    },
                     enabled = true,
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange)),
                     modifier = Modifier
