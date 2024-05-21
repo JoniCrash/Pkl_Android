@@ -25,6 +25,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Profil"
+            android:exported="false"
+            android:label="@string/title_activity_profil"
+            android:theme="@style/Theme.Layout" />
+        <activity
             android:name=".Pengajuan"
             android:exported="false"
             android:label="@string/title_activity_pengajuan"

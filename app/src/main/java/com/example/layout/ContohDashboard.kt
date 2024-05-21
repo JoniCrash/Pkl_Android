@@ -71,385 +71,385 @@ import androidx.compose.ui.window.Dialog
 import com.example.layout.ui.theme.Noted
 import androidx.compose.runtime.setValue
 
-class ContohDashboard : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-
-        super.onCreate(savedInstanceState)
-        setContent {
-            contohDashboard()
-
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun contohDashboard() {
-    val showMenu = remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) }
-    val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
-
-    // Loop untuk membuat RadioButton dengan TextField untuk setiap pilihan
-    val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
-    // MutableState untuk menyimpan opsi yang dipilih
-    var pilihanPaket by remember { mutableStateOf(opsiPaket[0]) }
-    // MutableState untuk menyimpan teks dalam TextField
-    var textValue by remember { mutableStateOf("") }
-
-    var noHp by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var namaLengkap by remember { mutableStateOf("") }
-    var paket by remember { mutableStateOf("") }
-    var lokasi by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(
-                vertical = 0.1.dp, horizontal = 0.1.dp
-            )
-    ) {
-
-
-        TopAppBar(title = {
-            Text(text = "Contoh Dashboard")
-        },
-            colors = TopAppBarDefaults.topAppBarColors(Color.Blue),
-            navigationIcon = {
-                IconButton(onClick = { showMenu.value = true }) {
-                    Icon(
-                        painterResource(id = R.drawable.baseline_menu_24),
-                        contentDescription = null
-                    )
-                    // Menggunakan Garis 3
-                }
-                DropdownMenu(
-                    expanded = showMenu.value,
-                    onDismissRequest = { showMenu.value = false }) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "Emang boleh?")
-                        },
-                        onClick = { /*TODO*/ })
-
-                    Spacer(
-                        modifier = Modifier
-                            .height(10.dp)
-                    )
-
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "Emang boleh??")
-                        },
-                        onClick = { /*TODO*/ })
-
-                    Spacer(
-                        modifier = Modifier
-                            .height(10.dp)
-                    )
-
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "Emang boleh????")
-                        },
-                        onClick = { /*TODO*/ })
-
-                    Spacer(
-                        modifier = Modifier
-                            .height(10.dp)
-                    )
-
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "Emang boleh????")
-                        },
-                        onClick = { /*TODO*/ })
-                }
-                //akhir garis 3
-
-            }
-        )
-
-
-        //akhir topappbar
+//class ContohDashboard : ComponentActivity() {
+//    @OptIn(ExperimentalMaterial3Api::class)
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//
+//
+//        super.onCreate(savedInstanceState)
+//        setContent {
+//            contohDashboard()
+//
+//        }
+//    }
+//}
+//
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun contohDashboard() {
+//    val showMenu = remember { mutableStateOf(false) }
+//    var showDialog by remember { mutableStateOf(false) }
+//    val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
+//
+//    // Loop untuk membuat RadioButton dengan TextField untuk setiap pilihan
+//    val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
+//    // MutableState untuk menyimpan opsi yang dipilih
+//    var pilihanPaket by remember { mutableStateOf(opsiPaket[0]) }
+//    // MutableState untuk menyimpan teks dalam TextField
+//    var textValue by remember { mutableStateOf("") }
+//
+//    var noHp by remember { mutableStateOf("") }
+//    var email by remember { mutableStateOf("") }
+//    var namaLengkap by remember { mutableStateOf("") }
+//    var paket by remember { mutableStateOf("") }
+//    var lokasi by remember { mutableStateOf("") }
+//
+//    Column(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .fillMaxHeight()
+//            .padding(
+//                vertical = 0.1.dp, horizontal = 0.1.dp
+//            )
+//    ) {
+//
+//
+//        TopAppBar(title = {
+//            Text(text = "Contoh Dashboard")
+//        },
+//            colors = TopAppBarDefaults.topAppBarColors(Color.Blue),
+//            navigationIcon = {
+//                IconButton(onClick = { showMenu.value = true }) {
+//                    Icon(
+//                        painterResource(id = R.drawable.baseline_menu_24),
+//                        contentDescription = null
+//                    )
+//                    // Menggunakan Garis 3
+//                }
+//                DropdownMenu(
+//                    expanded = showMenu.value,
+//                    onDismissRequest = { showMenu.value = false }) {
+//                    DropdownMenuItem(
+//                        text = {
+//                            Text(text = "Emang boleh?")
+//                        },
+//                        onClick = { /*TODO*/ })
+//
+//                    Spacer(
+//                        modifier = Modifier
+//                            .height(10.dp)
+//                    )
+//
+//                    DropdownMenuItem(
+//                        text = {
+//                            Text(text = "Emang boleh??")
+//                        },
+//                        onClick = { /*TODO*/ })
+//
+//                    Spacer(
+//                        modifier = Modifier
+//                            .height(10.dp)
+//                    )
+//
+//                    DropdownMenuItem(
+//                        text = {
+//                            Text(text = "Emang boleh????")
+//                        },
+//                        onClick = { /*TODO*/ })
+//
+//                    Spacer(
+//                        modifier = Modifier
+//                            .height(10.dp)
+//                    )
+//
+//                    DropdownMenuItem(
+//                        text = {
+//                            Text(text = "Emang boleh????")
+//                        },
+//                        onClick = { /*TODO*/ })
+//                }
+//                //akhir garis 3
+//
+//            }
+//        )
+//
+//
+//        //akhir topappbar
+////        Spacer(
+////            modifier = Modifier
+////                .height(20.dp)
+////        )
+//
+//        //menu profile
+//        Row {
+//            Button(
+//                onClick = {
+//                },
+//                colors = ButtonDefaults.elevatedButtonColors(
+//                    Color.Transparent
+//                )
+//            ) {
+//                Image(
+//                    painter = painterResource(id = R.drawable.comet_dark),
+//                    contentDescription = null,
+//                )
+//
+//            }
+//
+//            Button(
+//                onClick = { /*TODO*/ },
+//                colors = ButtonDefaults.elevatedButtonColors(
+//                    Color.Transparent
+//                )
+//            ) {
+//                Image(
+//                    imageVector = Icons.Default.AccountCircle, contentDescription = null,
+//                    Modifier.sizeIn(100.dp, 100.dp)
+//                )
+//            }
+//            IconButton(onClick = {}) {
+//                Image(
+//                    imageVector = Icons.Default.AccountBox, contentDescription = null,
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .fillMaxHeight()
+//                        .fillMaxSize()
+//
+//                )
+//            }
+//        }
 //        Spacer(
 //            modifier = Modifier
 //                .height(20.dp)
 //        )
-
-        //menu profile
-        Row {
-            Button(
-                onClick = {
-                },
-                colors = ButtonDefaults.elevatedButtonColors(
-                    Color.Transparent
-                )
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.comet_dark),
-                    contentDescription = null,
-                )
-
-            }
-
-            Button(
-                onClick = { /*TODO*/ },
-                colors = ButtonDefaults.elevatedButtonColors(
-                    Color.Transparent
-                )
-            ) {
-                Image(
-                    imageVector = Icons.Default.AccountCircle, contentDescription = null,
-                    Modifier.sizeIn(100.dp, 100.dp)
-                )
-            }
-            IconButton(onClick = {}) {
-                Image(
-                    imageVector = Icons.Default.AccountBox, contentDescription = null,
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .fillMaxSize()
-
-                )
-            }
-        }
-        Spacer(
-            modifier = Modifier
-                .height(20.dp)
-        )
-
-        Image(
-            imageVector = Icons.Default.Build, contentDescription = null,
-
-            modifier = Modifier
-                .sizeIn(100.dp, 100.dp)
-        )
-
-
-        //Mulai dialog
-        if (showDialog) {
-            Dialog(onDismissRequest = {
-                showDialog = false
-            }) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                )
-                {
-                    Column(Modifier.padding(16.dp)) {
-                        TextField(
-                            value = noHp,
-                            label = {
-                                Text(text = "Nomor Hp")
-                            },
-                            placeholder = {
-                                Text(text = "Nomor Hp")
-                            },
-                            onValueChange = { noHp = it },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = (Icons.Default.Phone),
-                                    contentDescription = null
-                                )
-                            },
-                            singleLine = true
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        TextField(
-                            value = email,
-                            label = {
-                                Text(text = "Email")
-                            },
-                            placeholder = {
-                                Text(text = "Email")
-                            },
-                            onValueChange = { email = it },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = (Icons.Default.Email),
-                                    contentDescription = null
-                                )
-                            },
-                            singleLine = true
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        TextField(
-                            value = namaLengkap,
-                            label = {
-                                Text(text = "Nama Lengkap")
-                            },
-                            placeholder = {
-                                Text(text = "Nama Lengkap")
-                            },
-                            onValueChange = { namaLengkap = it },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = (Icons.Default.Person),
-                                    contentDescription = null
-                                )
-                            },
-                            singleLine = true
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+//
+//        Image(
+//            imageVector = Icons.Default.Build, contentDescription = null,
+//
+//            modifier = Modifier
+//                .sizeIn(100.dp, 100.dp)
+//        )
+//
+//
+//        //Mulai dialog
+//        if (showDialog) {
+//            Dialog(onDismissRequest = {
+//                showDialog = false
+//            }) {
+//                Card(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .wrapContentHeight(),
+//                )
+//                {
+//                    Column(Modifier.padding(16.dp)) {
 //                        TextField(
-//                            value = paket,
+//                            value = noHp,
 //                            label = {
-//                                Text(text = "Paket WiFi")
+//                                Text(text = "Nomor Hp")
 //                            },
 //                            placeholder = {
-//                                Text(text = "Paket WiFi")
+//                                Text(text = "Nomor Hp")
 //                            },
-//                            onValueChange = { paket = it },
+//                            onValueChange = { noHp = it },
 //                            leadingIcon = {
 //                                Icon(
-//                                    imageVector = (Icons.Default.ShoppingCart),
+//                                    imageVector = (Icons.Default.Phone),
 //                                    contentDescription = null
 //                                )
 //                            },
 //                            singleLine = true
 //                        )
-                        //nyoba radio button
-
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            opsiPaket.forEach { pilihanya ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    RadioButton(
-                                        selected = pilihanPaket == pilihanya,
-                                        onClick = { pilihanPaket = pilihanya },
-                                        modifier = Modifier.padding(end = 8.dp)
-                                    )
-                                    Text(
-                                        text = pilihanya,
-                                        modifier = Modifier.padding(end = 8.dp)
-                                    )
-                                    if (pilihanPaket == pilihanya) {
-                                        TextField(
-                                            value = textValue,
-                                            onValueChange = { newValue -> textValue = newValue },
-                                            leadingIcon = {
-                                                    Icon(
-                                                        imageVector = (Icons.Default.ShoppingCart),
-                                                        contentDescription = null
-                                                        )
-                                                            },
-
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        TextField(
-                            value = lokasi,
-                            label = {
-                                Text(text = "Lokasi")
-                            },
-                            placeholder = {
-                                Text(text = "Lokasi")
-                            },
-                            onValueChange = { lokasi = it },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = (Icons.Default.LocationOn),
-                                    contentDescription = null
-                                )
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Row(Modifier.fillMaxWidth()) {
-                            Button(
-                                onClick = { showDialog = false })
-                            {
-                                Text(text = "Cancel")
-                            }
-
-                            Spacer(modifier = Modifier.width(20.dp))
-
-                            Button(onClick = {
-                                showDialog = false
-                                val note = ListPengajuan(
-                                    noHp,
-                                    email,
-                                    namaLengkap,
-                                    paket,
-                                    lokasi,
-                                )
-                                pengajuan.add(note)
-                                noHp = ""
-                                email = ""
-                                namaLengkap = ""
-                                paket = ""
-                                lokasi = ""
-                            }) {
-                                Text(text = "Save")
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = {
-                    showDialog = true
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                }
-            },
-        ) {
-            Column(
-                Modifier.padding(it).padding(16.dp),
-            ) {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    items(pengajuan.size, key = { it }) { index ->
-                        Card(
-                            Modifier.fillMaxWidth()
-                                .clickable {
-                                    showDialog = true
-
-                                    noHp = pengajuan[index].noHp
-                                    email = pengajuan[index].email
-                                    namaLengkap = pengajuan[index].namaLengkap
-                                    paket = pengajuan[index].paket
-                                    lokasi = pengajuan[index].lokasi
-
-                                },
-                        ) {
-                            Row(Modifier.fillMaxWidth()) {
-                                Column(
-                                    Modifier.padding(8.dp)
-                                        .weight(1f),
-                                ) {
-                                    Text(text = pengajuan[index].noHp)
-                                    Text(text = pengajuan[index].email)
-                                    Text(text = pengajuan[index].namaLengkap)
-                                    Text(text = pengajuan[index].paket)
-                                    Text(text = pengajuan[index].lokasi)
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-@Preview (showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewcontohDashboard() {
-    contohDashboard()
-}
+//                        Spacer(modifier = Modifier.height(16.dp))
+//                        TextField(
+//                            value = email,
+//                            label = {
+//                                Text(text = "Email")
+//                            },
+//                            placeholder = {
+//                                Text(text = "Email")
+//                            },
+//                            onValueChange = { email = it },
+//                            leadingIcon = {
+//                                Icon(
+//                                    imageVector = (Icons.Default.Email),
+//                                    contentDescription = null
+//                                )
+//                            },
+//                            singleLine = true
+//                        )
+//                        Spacer(modifier = Modifier.height(16.dp))
+//                        TextField(
+//                            value = namaLengkap,
+//                            label = {
+//                                Text(text = "Nama Lengkap")
+//                            },
+//                            placeholder = {
+//                                Text(text = "Nama Lengkap")
+//                            },
+//                            onValueChange = { namaLengkap = it },
+//                            leadingIcon = {
+//                                Icon(
+//                                    imageVector = (Icons.Default.Person),
+//                                    contentDescription = null
+//                                )
+//                            },
+//                            singleLine = true
+//                        )
+//                        Spacer(modifier = Modifier.height(16.dp))
+////                        TextField(
+////                            value = paket,
+////                            label = {
+////                                Text(text = "Paket WiFi")
+////                            },
+////                            placeholder = {
+////                                Text(text = "Paket WiFi")
+////                            },
+////                            onValueChange = { paket = it },
+////                            leadingIcon = {
+////                                Icon(
+////                                    imageVector = (Icons.Default.ShoppingCart),
+////                                    contentDescription = null
+////                                )
+////                            },
+////                            singleLine = true
+////                        )
+//                        //nyoba radio button
+//
+//                        Column(
+//                            modifier = Modifier.padding(16.dp)
+//                        ) {
+//                            opsiPaket.forEach { pilihanya ->
+//                                Row(
+//                                    verticalAlignment = Alignment.CenterVertically
+//                                ) {
+//                                    RadioButton(
+//                                        selected = pilihanPaket == pilihanya,
+//                                        onClick = { pilihanPaket = pilihanya },
+//                                        modifier = Modifier.padding(end = 8.dp)
+//                                    )
+//                                    Text(
+//                                        text = pilihanya,
+//                                        modifier = Modifier.padding(end = 8.dp)
+//                                    )
+//                                    if (pilihanPaket == pilihanya) {
+//                                        TextField(
+//                                            value = textValue,
+//                                            onValueChange = { newValue -> textValue = newValue },
+//                                            leadingIcon = {
+//                                                    Icon(
+//                                                        imageVector = (Icons.Default.ShoppingCart),
+//                                                        contentDescription = null
+//                                                        )
+//                                                            },
+//
+//                                            modifier = Modifier.fillMaxWidth()
+//                                        )
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        Spacer(modifier = Modifier.height(16.dp))
+//                        TextField(
+//                            value = lokasi,
+//                            label = {
+//                                Text(text = "Lokasi")
+//                            },
+//                            placeholder = {
+//                                Text(text = "Lokasi")
+//                            },
+//                            onValueChange = { lokasi = it },
+//                            leadingIcon = {
+//                                Icon(
+//                                    imageVector = (Icons.Default.LocationOn),
+//                                    contentDescription = null
+//                                )
+//                            }
+//                        )
+//
+//                        Spacer(modifier = Modifier.height(20.dp))
+//                        Row(Modifier.fillMaxWidth()) {
+//                            Button(
+//                                onClick = { showDialog = false })
+//                            {
+//                                Text(text = "Cancel")
+//                            }
+//
+//                            Spacer(modifier = Modifier.width(20.dp))
+//
+//                            Button(onClick = {
+//                                showDialog = false
+//                                val note = ListPengajuan(
+//                                    noHp,
+//                                    email,
+//                                    namaLengkap,
+//                                    paket,
+//                                    lokasi,
+//                                )
+//                                pengajuan.add(note)
+//                                noHp = ""
+//                                email = ""
+//                                namaLengkap = ""
+//                                paket = ""
+//                                lokasi = ""
+//                            }) {
+//                                Text(text = "Save")
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        Scaffold(
+//            floatingActionButton = {
+//                FloatingActionButton(onClick = {
+//                    showDialog = true
+//                }) {
+//                    Icon(Icons.Default.Add, contentDescription = null)
+//                }
+//            },
+//        ) {
+//            Column(
+//                Modifier.padding(it).padding(16.dp),
+//            ) {
+//                LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+//                    items(pengajuan.size, key = { it }) { index ->
+//                        Card(
+//                            Modifier.fillMaxWidth()
+//                                .clickable {
+//                                    showDialog = true
+//
+//                                    noHp = pengajuan[index].noHp
+//                                    email = pengajuan[index].email
+//                                    namaLengkap = pengajuan[index].namaLengkap
+//                                    paket = pengajuan[index].paket
+//                                    lokasi = pengajuan[index].lokasi
+//
+//                                },
+//                        ) {
+//                            Row(Modifier.fillMaxWidth()) {
+//                                Column(
+//                                    Modifier.padding(8.dp)
+//                                        .weight(1f),
+//                                ) {
+//                                    Text(text = pengajuan[index].noHp)
+//                                    Text(text = pengajuan[index].email)
+//                                    Text(text = pengajuan[index].namaLengkap)
+//                                    Text(text = pengajuan[index].paket)
+//                                    Text(text = pengajuan[index].lokasi)
+//
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//@Preview (showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewcontohDashboard() {
+//    contohDashboard()
+//}

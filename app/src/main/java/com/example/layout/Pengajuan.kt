@@ -1,15 +1,19 @@
 package com.example.layout
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore.Images.Media.getBitmap
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -71,6 +75,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 class Pengajuan : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +86,6 @@ class Pengajuan : ComponentActivity() {
     }
 
 }
-
 //fun GetLocation(locationState: MutableState<Location?>, addressState: MutableState<String?>) {
 //    try {
 //        val locationManager = applicationContext.getSystemService(Activity.LOCATION_SERVICE) as LocationManager
@@ -132,7 +137,6 @@ class Pengajuan : ComponentActivity() {
 //        e.printStackTrace()
 //    }
 //}
-
 val LocalLocationManagerHelper = staticCompositionLocalOf<LocationManagerHelper> {
     error("No LocationManagerHelper provided")
 }
@@ -151,8 +155,8 @@ fun ppengajuan() {
     var address by remember { mutableStateOf<String?>(null) }
     var locationText by remember { mutableStateOf("") }
     var addressText by remember { mutableStateOf("") }
-//    val locationState = remember { mutableStateOf<Location?>(null) }
-//    val adres = remember { mutableStateOf<String?>(null) }
+    val locationState = remember { mutableStateOf<Location?>(null) }
+    val adres = remember { mutableStateOf<String?>(null) }
 //    val location = locationState.value
     val text = remember { mutableStateOf(false) }
     //val showMenu = remember { mutableStateOf(false) }
@@ -242,40 +246,12 @@ fun ppengajuan() {
             if (!locationManagerHelper.isLocationEnabled()){
                 locationManagerHelper.openLocationSettings()
             } else {
-                locationManagerHelper.getLocation(location,address)
+                locationManagerHelper.getLocation()
             }
         }
 
     }
     ///
-
-    //Validasi jika texfield kosong
-
-//    fun validasiJikaKosong(): Boolean {
-////                true -> Text("NIK tidak boleh kosong", color = MaterialTheme.colorScheme.error)
-////                false -> Text("")
-//
-//        when (namaLengkapError) {
-//            true -> namaLengkap = ""
-//            false -> namaLengkapError
-//        }
-//        when (nikError) {
-//            true -> nik = ""
-//            false -> nikError
-//        }
-//        when (noHpError) {
-//            true -> noHp = ""
-//            false -> noHpError
-//        }
-//        when (emailError) {
-//            true -> email = ""
-//            false -> emailError
-//        }
-//        return validasiJikaKosong()
-//    }
-
-    //Akhir Validasi jika textfield kosong
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -459,7 +435,7 @@ fun ppengajuan() {
                             if (!locationManagerHelper.isLocationEnabled()) {
                                 locationManagerHelper.openLocationSettings()
                             } else {
-                                locationManagerHelper.getLocation(location, address)
+                                locationManagerHelper.getLocation()
                                 location?.let {
                                     locationText = " ${it.latitude}, ${it.longitude}"
                                 }

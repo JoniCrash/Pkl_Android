@@ -14,10 +14,12 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.MutableLiveData
 import java.util.*
 
 class LocationManagerHelper(val context: Context) {
-
+    val locationState = MutableLiveData<Location?>()
+    val addressState = MutableLiveData<String>()
     fun checkLocationPermission(activity: Activity) {
         when {
             ContextCompat.checkSelfPermission(
@@ -47,7 +49,7 @@ class LocationManagerHelper(val context: Context) {
         context.startActivity(intent)
     }
 
-    fun getLocation(locationState: Location?, addressState: String?) {
+    fun getLocation() {
         try {
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -60,6 +62,7 @@ class LocationManagerHelper(val context: Context) {
                 5000,
                 5f,
                 object : LocationListener {
+                    @Suppress("DEPRECATION")
                     override fun onLocationChanged(location: Location) {
                         locationState.value = location
                         try {
@@ -71,7 +74,7 @@ class LocationManagerHelper(val context: Context) {
                             )
                             if (addresses != null && addresses.isNotEmpty()) {
                                 val address = addresses[0].getAddressLine(0)
-                                addressState = address
+                                addressState.value = address
                             } else {
                                 addressState.value = "Tidak dapat menemukan alamat"
                             }

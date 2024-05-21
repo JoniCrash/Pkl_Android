@@ -2,5 +2,6 @@
 <resources>
 
     <style name="Theme.Layout" parent="android:Theme.Material.Light.NoActionBar" />
-    <style name="MyTheme.Layout" parent="android:ThemeOverlay.Material.Dark.ActionBar"/>
+
+    <style name="MyTheme.Layout" parent="android:ThemeOverlay.Material.Dark.ActionBar" />
 </resources>

@@ -18,4 +18,5 @@
     <string name="select">Select</string>
     <string name="upload">Upload</string>
     <string name="title_activity_pengajuan">Pengajuan</string>
+    <string name="title_activity_profil">Profil</string>
 </resources>
