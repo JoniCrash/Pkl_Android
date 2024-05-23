@@ -56,7 +56,7 @@ class Masuk : ComponentActivity() {
 }
 
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun PrevCompMasuk() {
     CompMasuk()
@@ -65,9 +65,9 @@ private fun PrevCompMasuk() {
 fun CompMasuk() {
     val context = LocalContext.current
     val networkManager = NetworkManager(context)
-    var user by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
-    val userError = user.isEmpty()
+    val userError = username.isEmpty()
     val pwError = pw.isEmpty()
     Column(
         modifier = Modifier
@@ -98,8 +98,8 @@ fun CompMasuk() {
             ) {
                 OutlinedTextField(
                     //text input username
-                    value = user,
-                    onValueChange = { user = it },
+                    value = username,
+                    onValueChange = { username = it },
                     label = { Text("Username") },
                     placeholder = {Text( "Username")},
                     singleLine = true,
