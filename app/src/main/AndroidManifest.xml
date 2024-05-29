@@ -25,6 +25,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ContohDatePicker"
+            android:exported="false"
+            android:label="@string/title_activity_contoh_date_picker"
+            android:theme="@style/Theme.Layout" />
+        <activity
             android:name=".Profil"
             android:exported="false"
             android:label="@string/title_activity_profil"
