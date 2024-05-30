@@ -1,21 +1,19 @@
 package com.example.layout
 
-import android.app.Activity
-import android.content.Context
+import android.R.attr.label
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.location.Location
-import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore.Images.Media.getBitmap
-import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,13 +47,14 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,13 +74,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+
 
 class Pengajuan : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            pppengajuan()
         }
     }
 
@@ -144,10 +143,11 @@ val LocalLocationManagerHelper = staticCompositionLocalOf<LocationManagerHelper>
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun PreviewPengajuan() {
-    ppengajuan()
+    pppengajuan()
 }
+
 @Composable
-fun ppengajuan() {
+fun pppengajuan() {
     val context = LocalContext.current
     val locationManagerHelper = LocalLocationManagerHelper.current
     val activity = context as? MainActivity
@@ -157,19 +157,12 @@ fun ppengajuan() {
     var addressText by remember { mutableStateOf("") }
     val locationState = remember { mutableStateOf<Location?>(null) }
     val adres = remember { mutableStateOf<String?>(null) }
-//    val location = locationState.value
-    val text = remember { mutableStateOf(false) }
-    //val showMenu = remember { mutableStateOf(false) }
+
     var showDialogKtp by remember { mutableStateOf(false) }
     var showDialogDepanRumah by remember { mutableStateOf(false) }
-    //val pengajuan = remember { mutableStateListOf<ListPengajuan>() }
     val scrollState = rememberScrollState()
-    // Loop untuk membuat RadioButton dengan TextField untuk setiap pilihan
     val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
-    // untuk menyimpan opsi yang dipilih
     var pilihanPaket by remember { mutableStateOf(opsiPaket[0]) }
-    // MutableState untuk menyimpan teks dalam TextField
-    var textValue by remember { mutableStateOf("") }
 
     var namaLengkap by remember { mutableStateOf("") }
     var nik by remember { mutableStateOf("") }
@@ -180,7 +173,6 @@ fun ppengajuan() {
     val showPassword = remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val matchError = remember { mutableStateOf(false) }
-    val hasError = false
 
     //Variabel validasi
     var namaLengkapError by remember { mutableStateOf(false) }
@@ -191,74 +183,71 @@ fun ppengajuan() {
     noHpError = noHp.isEmpty()
     var emailError by remember { mutableStateOf(false) }
     emailError = email.isEmpty()
-    var locationStateEror by remember { mutableStateOf(false) }
-    var adresEror by remember { mutableStateOf(false) }
-
 
     var showimgg by remember { mutableStateOf(false) }
     val isUploadingKtp = remember { mutableStateOf(false) }
     val isUploadingDepanRumah = remember { mutableStateOf(false) }
 
     val networkManager = NetworkManager(context)
-    val imgKtp: Bitmap = BitmapFactory.decodeResource(
-        Resources.getSystem(),
-        android.R.drawable.ic_menu_report_image
-    )
-    val imgDepanRumah: Bitmap = BitmapFactory.decodeResource(
-        Resources.getSystem(),
-        android.R.drawable.ic_menu_report_image
-    )
+    val imgKtp: Bitmap = BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.baseline_person_24)
+    val imgDepanRumah: Bitmap = BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.baseline_menu_24)
     val bitmapKtp = remember { mutableStateOf(imgKtp) }
     val bitmapDepanRumah = remember { mutableStateOf(imgDepanRumah) }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview()
-    ) {
+
+
+    val launcherKtp = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
         if (it != null) {
             bitmapKtp.value = it
+        }
+    }
+    val launcherDepanRumah = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+        if (it != null) {
             bitmapDepanRumah.value = it
         }
     }
-    val launchImage =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
-            if (Build.VERSION.SDK_INT < 28) {
+    val launchImageKtp = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        it?.let { uri ->
+            val bitmapktp = if (Build.VERSION.SDK_INT < 28) {
                 @Suppress("DEPRECATION")
-                bitmapKtp.value =
-                    getBitmap(context.contentResolver, it)
-                bitmapDepanRumah.value =
-                    getBitmap(context.contentResolver, it)
+                getBitmap(context.contentResolver, uri)
             } else {
-                val source = it?.let { it1 ->
-                    ImageDecoder.createSource(context.contentResolver, it1)
-                }
-                bitmapKtp.value = source?.let { it1 ->
-                    ImageDecoder.decodeBitmap(it1)
-                }!!
-                bitmapDepanRumah.value = source?.let { it1 ->
-                    ImageDecoder.decodeBitmap(it1)
-                }!!
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
             }
+            bitmapKtp.value = bitmapktp
         }
-    ///
+    }
+    val launchImageDepanRumah = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        it?.let { uri ->
+            val bitmapDepanRmh = if (Build.VERSION.SDK_INT < 28) {
+                @Suppress("DEPRECATION")
+                getBitmap(context.contentResolver, uri)
+            } else {
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+            }
+            bitmapDepanRumah.value = bitmapDepanRmh
+        }
+    }
+
+
     LaunchedEffect(Unit) {
         activity?.let {
             locationManagerHelper.checkLocationPermission(it)
-            if (!locationManagerHelper.isLocationEnabled()){
+            if (!locationManagerHelper.isLocationEnabled()) {
                 locationManagerHelper.openLocationSettings()
             } else {
                 locationManagerHelper.getLocation()
             }
         }
-
     }
-    ///
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(vertical = 0.1.dp, horizontal = 0.1.dp)
-    )
-    {
+            .padding(16.dp)
+            .verticalScroll(scrollState)
+    ) {
         Image(
             painter = painterResource(R.drawable.comet_dark),
             contentDescription = null,
@@ -267,429 +256,304 @@ fun ppengajuan() {
                 .align(Alignment.CenterHorizontally)
                 .size(100.dp)
         )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
 
-            Spacer(modifier = Modifier.padding(8.dp))
-            BasicText(
-                text = "FORM PENGAJUAN PEMASANGAN WIFI COMET"
-            )
+        Spacer(modifier = Modifier.height(8.dp))
+        BasicText(text = "FORM PENGAJUAN PEMASANGAN WIFI COMET")
 
-            Card {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .verticalScroll(scrollState)
-                        .fillMaxSize()
+        Spacer(modifier = Modifier.height(16.dp))
+        Card {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                FormFields(
+                    namaLengkap, { namaLengkap = it }, namaLengkapError,
+                    nik, { nik = it }, nikError,
+                    noHp, { noHp = it }, noHpError,
+                    email, { email = it }, emailError,
+                    locationText, { locationText = it },
+                    addressText, { addressText = it },
+                    lokasiEnabled = locationManagerHelper.isLocationEnabled(),
+                    onGetLocation = {
+                        locationManagerHelper.getLocation()
+                        location?.let { locationText = " ${it.latitude}, ${it.longitude}" }
+                        address?.let { addressText = it }
+                    },
+                    bitmapKtp, showDialogKtp, { showDialogKtp = it },
+                    bitmapDepanRumah, showDialogDepanRumah, { showDialogDepanRumah = it },
+                    launcherKtp, launchImageKtp, launcherDepanRumah, launchImageDepanRumah
                 )
-                {
-                    OutlinedTextField(
-                        value = namaLengkap,
-                        onValueChange = {
-                            namaLengkap = it
-                        },
-                        isError = namaLengkapError,
-                        label = {
-                            Text(text = "Nama Lengkap")
-                        },
-                        placeholder = {
-                            Text(text = "Nama Lengkap")
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = (Icons.Default.Person),
-                                contentDescription = null
-                            )
-                        },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = nik,
-                        onValueChange = { nik = it },
-                        isError = nikError,
-                        label = {
-                            Text(text = "NIK")
-                        },
-                        placeholder = {
-                            Text(text = "NIK")
-                        },
 
-                        leadingIcon = {
-                            Icon(
-                                imageVector = (Icons.Default.Person),
-                                contentDescription = null
-                            )
-                        },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = noHp,
-                        onValueChange = { noHp = it },
-                        isError = noHpError,
-                        label = {
-                            Text(text = "Nomor Hp")
-                        },
-                        placeholder = {
-                            Text(text = "Nomor Hp")
-                        },
-
-                        leadingIcon = {
-                            Icon(
-                                imageVector = (Icons.Default.Phone),
-                                contentDescription = null
-                            )
-                        },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        isError = emailError,
-                        label = {
-                            Text(text = "Email")
-                        },
-                        placeholder = {
-                            Text(text = "Email")
-                        },
-
-                        leadingIcon = {
-                            Icon(
-                                imageVector = (Icons.Default.Email),
-                                contentDescription = null
-                            )
-                        },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Text(text = "Paket")
-                            opsiPaket.forEach { pilihanya ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    RadioButton(
-                                        selected = pilihanPaket == pilihanya,
-                                        onClick = { pilihanPaket = pilihanya },
-                                        modifier = Modifier.padding(end = 1.dp)
-                                    )
-                                    Text(
-                                        text = pilihanya,
-                                        modifier = Modifier.padding(end = 1.dp)
-                                    )
-                                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        networkManager.userPengajuan(object : NetworkCallback {
+                            override fun onSuccess(response: String) {
+                                Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
+                                val intent = Intent(context, Dashboard::class.java)
+                                context.startActivity(intent)
                             }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                    OutlinedTextField(
-                        value = locationText,
-                        onValueChange = { locationText = it },
-                        label = { Text("Titik Kordinat") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = (Icons.Default.LocationOn),
-                                contentDescription = null
-                            )
-                        },
-                        singleLine = true
-                    )
-                    OutlinedTextField(
-                        value = addressText ,
-                        onValueChange = { addressText = it },
-                        label = { Text("Alamat Pemasangan") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = (Icons.Default.Home),
-                                contentDescription = null
-                            )
-                        },
-                        singleLine = false
-                    )
-                    Button(
-                        onClick = {
-                            if (!locationManagerHelper.isLocationEnabled()) {
-                                locationManagerHelper.openLocationSettings()
-                            } else {
-                                locationManagerHelper.getLocation()
-                                location?.let {
-                                    locationText = " ${it.latitude}, ${it.longitude}"
-                                }
-                                address?.let {
-                                    addressText = it
-                                }
+
+                            override fun onFailure(error: Exception) {
+                                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
                             }
-                        },
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange)),
-                    ) {
-                        Text(
-                            text = "Cari Lokasi",
-                            color = colorResource(id = R.color.black)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    //Awal Upload image
-
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 1.dp)
-                    )
-                    {
-                        Button(
-                            onClick = { showDialogKtp = true },
-                            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange))
-                        ) {
-                            Text(
-                                text = "Upload KTP",
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.black)
-                            )
-
-                        }
-                        Image(
-                            bitmap = bitmapKtp.value.asImageBitmap(),
-                            contentScale = ContentScale.Crop,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .padding(start = 200.dp)
-                                .clip(RectangleShape)
-                                .size(width = 140.dp, height = 80.dp)
-                                //.background(Color.Blue)
-                                .border(
-                                    width = 1.dp,
-                                    color = Color.Black,
-                                    shape = RectangleShape
-                                )
-                        )
-                        if (showDialogKtp) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier
-                                    .width(300.dp)
-                                    .height(200.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(Color.Blue)
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .padding(60.dp)
-                                ) {
-                                    Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(50.dp)
-                                            .clickable {
-                                                launcher.launch()
-                                                showDialogKtp = false
-                                            })
-                                    Text(
-                                        text = "Camera",
-                                        color = Color.White
-                                    )
-                                }
-                                Spacer(modifier = Modifier.padding(30.dp))
-                                Column {
-                                    Image(painter = painterResource(id = R.drawable.baseline_image_24),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(50.dp)
-                                            .clickable {
-                                                launchImage.launch("image/*")
-                                                showDialogKtp = false
-                                            })
-                                    Text(
-                                        text = "Galeri",
-                                        color = Color.White
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .padding(start = 50.dp, bottom = 80.dp)
-                                )
-                                {
-                                    Text(
-                                        text = "X",
-                                        color = Color.White,
-                                        modifier = Modifier
-                                            .clickable { showDialogKtp = false })
-                                }
-                            }
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxSize()
-                        ) {
-                            if (isUploadingKtp.value) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .padding(16.dp),
-                                    color = Color.White
-                                )
-                            }
-                        }
-
-                    }
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 1.dp)
-                    )
-                    {
-                        Button(
-                            onClick = { showDialogDepanRumah = true },
-                            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange)),
-                        ) {
-                            Text(
-                                text = "Poto Depan Rumah",
-                                color = colorResource(id = R.color.black)
-                            )
-                        }
-                        Image(
-                            bitmap = bitmapDepanRumah.value.asImageBitmap(),
-                            contentScale = ContentScale.Crop,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .padding(start = 200.dp)
-                                .clip(RectangleShape)
-                                .size(width = 140.dp, height = 80.dp)
-                                //.background(Color.Blue)
-                                .border(
-                                    width = 1.dp,
-                                    color = Color.Black,
-                                    shape = RectangleShape
-                                )
-                        )
-
-                        if (showDialogDepanRumah) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier
-                                    .width(300.dp)
-                                    .height(200.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(Color.Blue)
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .padding(60.dp)
-                                ) {
-                                    Image(painter = painterResource(id = R.drawable.baseline_photo_camera_24),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(50.dp)
-                                            .clickable {
-                                                launcher.launch()
-                                                showDialogDepanRumah = false
-                                            })
-                                    Text(
-                                        text = "Camera",
-                                        color = Color.White
-                                    )
-                                }
-                                Spacer(modifier = Modifier.padding(30.dp))
-                                Column {
-                                    Image(painter = painterResource(id = R.drawable.baseline_image_24),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(50.dp)
-                                            .clickable {
-                                                launchImage.launch("image/*")
-                                                showDialogDepanRumah = false
-                                            })
-                                    Text(
-                                        text = "Galeri",
-                                        color = Color.White
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier
-                                        .padding(start = 50.dp, bottom = 80.dp)
-                                )
-                                {
-                                    Text(
-                                        text = "X",
-                                        color = Color.White,
-                                        modifier = Modifier
-                                            .clickable { showDialogDepanRumah = false })
-                                }
-                            }
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxSize()
-                        ) {
-                            if (isUploadingDepanRumah.value) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .padding(16.dp),
-                                    color = Color.White
-                                )
-                            }
-                        }
-
-                    }
-                    // Akhir upload Image
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = {
-                                  networkManager.userPengajuan(object : NetworkCallback {
-                                      override fun onSuccess(response: String) {
-                                          Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
-                                          val intent = Intent(context, Dashboard::class.java)
-                                          context.startActivity(intent)
-                                      }
-
-                                      override fun onFailure(error: Exception) {
-                                          Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-                                      }
-
-                                  })
-                        },
-                        enabled = true,
-                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange)),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp)
-                    ) {
-                        Text(
-                            text = "PENGAJUAN",
-                            color = colorResource(id = R.color.black)
-                        )
-                    }
-
+                        })
+                    },
+                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "PENGAJUAN", color = colorResource(id = R.color.black))
                 }
             }
         }
     }
-}//Akhir FormPengauan
+}
+
+@Composable
+fun FormFields(
+    namaLengkap: String,
+    onNamaLengkapChange: (String) -> Unit,
+    namaLengkapError: Boolean,
+    nik: String,
+    onNikChange: (String) -> Unit,
+    nikError: Boolean,
+    noHp: String,
+    onNoHpChange: (String) -> Unit,
+    noHpError: Boolean,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    emailError: Boolean,
+    locationText: String,
+    onLocationTextChange: (String) -> Unit,
+    addressText: String,
+    onAddressTextChange: (String) -> Unit,
+    lokasiEnabled: Boolean,
+    onGetLocation: () -> Unit,
+    bitmapKtp: MutableState<Bitmap>,
+    showDialogKtp: Boolean,
+    onShowDialogKtpChange: (Boolean) -> Unit,
+    bitmapDepanRumah: MutableState<Bitmap>,
+    showDialogDepanRumah: Boolean,
+    onShowDialogDepanRumahChange: (Boolean) -> Unit,
+    launcherKtp: ManagedActivityResultLauncher<Void?, Bitmap?>,
+    launchImageKtp: ManagedActivityResultLauncher<String, Uri?>,
+    launcherDepanRumah: ManagedActivityResultLauncher<Void?, Bitmap?>,
+    launchImageDepanRumah: ManagedActivityResultLauncher<String, Uri?>
+) {
+    val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
+    var pilihanPaket by remember { mutableStateOf(opsiPaket[0]) }
+    val context = LocalContext.current
+    val locationManagerHelper = LocalLocationManagerHelper.current
+    OutlinedTextField(
+        value = namaLengkap,
+        onValueChange = onNamaLengkapChange,
+        isError = namaLengkapError,
+        label = { Text(text = "Nama Lengkap") },
+        placeholder = { Text(text = "Nama Lengkap") },
+        leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedTextField(
+        value = nik,
+        onValueChange = onNikChange,
+        isError = nikError,
+        label = { Text(text = "NIK") },
+        placeholder = { Text(text = "NIK") },
+        leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedTextField(
+        value = noHp,
+        onValueChange = onNoHpChange,
+        isError = noHpError,
+        label = { Text(text = "Nomor Hp") },
+        placeholder = { Text(text = "Nomor Hp") },
+        leadingIcon = { Icon(imageVector = Icons.Default.Phone, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedTextField(
+        value = email,
+        onValueChange = onEmailChange,
+        isError = emailError,
+        label = { Text(text = "Email") },
+        placeholder = { Text(text = "Email") },
+        leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+    PaketOptions(pilihanPaket, { pilihanPaket = it })
+
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedTextField(
+        value = locationText,
+        onValueChange = onLocationTextChange,
+        label = { Text("Lokasi") },
+        leadingIcon = { Icon(imageVector = Icons.Default.LocationOn, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedTextField(
+        value = addressText,
+        onValueChange = onAddressTextChange,
+        label = { Text("Alamat Pemasangan") },
+        leadingIcon = { Icon(imageVector = Icons.Default.Home, contentDescription = null) },
+        singleLine = false,
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+    Button(
+        onClick = {
+            if (!lokasiEnabled) {
+                locationManagerHelper.openLocationSettings()
+            } else {
+                onGetLocation()
+            }
+        },
+        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange))
+    ) {
+        Text(text = "Cari Lokasi", color = colorResource(id = R.color.black))
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+    ImageUploadSection(
+        "Upload KTP",
+        bitmapKtp,
+        showDialogKtp,
+        onShowDialogKtpChange,
+        launcherKtp,
+        launchImageKtp
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+    ImageUploadSection(
+        "Foto Depan Rumah",
+        bitmapDepanRumah,
+        showDialogDepanRumah,
+        onShowDialogDepanRumahChange,
+        launcherDepanRumah,
+        launchImageDepanRumah
+    )
+}
+
+@Composable
+fun PaketOptions(pilihanPaket: String, onPilihanPaketChange: (String) -> Unit) {
+    val opsiPaket = listOf("15 Mbps", "30 Mbps", "50 Mbps", "100 Mbps")
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(text = "Paket")
+        opsiPaket.forEach { pilihanya ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = pilihanPaket == pilihanya,
+                    onClick = { onPilihanPaketChange(pilihanya) },
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(text = pilihanya, modifier = Modifier.padding(end = 8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun ImageUploadSection(
+    label: String,
+    bitmap: MutableState<Bitmap>,
+    showDialog: Boolean,
+    onShowDialogChange: (Boolean) -> Unit,
+    launcher: ManagedActivityResultLauncher<Void?, Bitmap?>,
+    launchImage: ManagedActivityResultLauncher<String, Uri?>
+) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { onShowDialogChange(true) },
+            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange))
+        ) {
+            Text(text = label, fontWeight = FontWeight.Bold, color = colorResource(id = R.color.black))
+        }
+        Image(
+            bitmap = bitmap.value.asImageBitmap(),
+            contentScale = ContentScale.Crop,
+            contentDescription = null,
+            modifier = Modifier
+                .padding(start = 200.dp)
+                .clip(RectangleShape)
+                .size(width = 140.dp, height = 80.dp)
+                .border(1.dp, Color.Black, RectangleShape)
+        )
+        if (showDialog) {
+            UploadDialog(
+                onCameraClick = {
+                    launcher.launch()
+                    onShowDialogChange(false)
+                },
+                onGalleryClick = {
+                    launchImage.launch("image/*")
+                    onShowDialogChange(false)
+                },
+                onDismiss = { onShowDialogChange(false) }
+            )
+        }
+    }
+}
+
+@Composable
+fun UploadDialog(onCameraClick: () -> Unit, onGalleryClick: () -> Unit, onDismiss: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Blue.copy(alpha = 0.8f))
+            .clickable(onClick = onDismiss)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .width(300.dp)
+                .height(200.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.White)
+                .align(Alignment.Center)
+                .clickable(enabled = false) { }
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(onClick = onCameraClick) {
+                        Icon(painter = painterResource(id = R.drawable.baseline_photo_camera_24), contentDescription = null, modifier = Modifier.size(50.dp))
+                    }
+                    Text(text = "Camera")
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(onClick = onGalleryClick) {
+                        Icon(painter = painterResource(id = R.drawable.baseline_image_24), contentDescription = null, modifier = Modifier.size(50.dp))
+                    }
+                    Text(text = "Gallery")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Cancel",
+                color = Color.Red,
+                modifier = Modifier.clickable(onClick = onDismiss)
+            )
+        }
+    }
+}
+
