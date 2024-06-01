@@ -20,4 +20,5 @@
     <string name="title_activity_pengajuan">Pengajuan</string>
     <string name="title_activity_profil">Profil</string>
     <string name="title_activity_contoh_date_picker">ContohDatePicker</string>
+    <string name="title_activity_upload_gambar">UploadGambar</string>
 </resources>
